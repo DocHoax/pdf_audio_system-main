@@ -6,11 +6,13 @@
  */
 
 // Error reporting (disabled for production)
-error_reporting(0);
-ini_set('display_errors', 0);
+$isProduction = getenv('APP_ENV') === 'production';
+error_reporting($isProduction ? 0 : E_ALL);
+ini_set('display_errors', $isProduction ? 0 : 1);
 
 // YarnGPT API Configuration
-define('YARNGPT_API_KEY', 'your_yarngpt_api_key_here');
+// In production, set YARNGPT_API_KEY as environment variable in Digital Ocean
+define('YARNGPT_API_KEY', getenv('YARNGPT_API_KEY') ?: 'your_yarngpt_api_key_here');
 
 // Available YarnGPT Voices
 define('YARNGPT_VOICES', [

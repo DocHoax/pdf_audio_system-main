@@ -1,0 +1,79 @@
+name: echodoc-pdf-audio
+region: nyc
+services:
+  - name: web
+    github:
+      repo: DocHoax/pdf_audio_system-main
+      branch: main
+      deploy_on_push: true
+    
+    # PHP service configuration
+    environment_slug: php
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    
+    # Health check
+    health_check:
+      http_path: /
+      initial_delay_seconds: 60
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    
+    # Environment variables (will be set in DO dashboard)
+    envs:
+      - key: DB_HOST
+        value: ${db.HOSTNAME}
+        type: SECRET
+      - key: DB_NAME
+        value: ${db.DATABASE}
+        type: SECRET
+      - key: DB_USER
+        value: ${db.USERNAME}
+        type: SECRET
+      - key: DB_PASS
+        value: ${db.PASSWORD}
+        type: SECRET
+      - key: DB_PORT
+        value: ${db.PORT}
+        type: SECRET
+      - key: YARNGPT_API_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: GOOGLE_CLIENT_ID
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: GOOGLE_CLIENT_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: GOOGLE_REDIRECT_URI
+        value: https://echodoc-pdf-audio-xxxxx.ondigitalocean.app/google-callback.php
+        type: GENERAL
+      - key: APP_ENV
+        value: production
+        type: GENERAL
+    
+    # Build command (optional, for composer if needed)
+    build_command: |
+      mkdir -p uploads/avatars
+      chmod 755 uploads
+      chmod 755 uploads/avatars
+    
+    # Run command (PHP built-in server or Apache)
+    run_command: heroku-php-apache2
+    
+    # Routes
+    routes:
+      - path: /
+    
+    # HTTP port
+    http_port: 8080
+
+# Database configuration
+databases:
+  - name: db
+    engine: MYSQL
+    version: "8"
+    production: true
+    cluster_name: echodoc-db-cluster

@@ -15,9 +15,10 @@
  */
 
 // Google OAuth Credentials
-define('GOOGLE_CLIENT_ID', 'your_google_client_id_here');
-define('GOOGLE_CLIENT_SECRET', 'your_google_client_secret_here');
-define('GOOGLE_REDIRECT_URI', 'http://localhost/pdf_audio_system-main/google-callback.php');
+// In production, set these as environment variables in Digital Ocean
+define('GOOGLE_CLIENT_ID', getenv('GOOGLE_CLIENT_ID') ?: 'your_google_client_id_here');
+define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: 'your_google_client_secret_here');
+define('GOOGLE_REDIRECT_URI', getenv('GOOGLE_REDIRECT_URI') ?: 'http://localhost/pdf_audio_system-main/google-callback.php');
 
 // Google OAuth URLs
 define('GOOGLE_AUTH_URL', 'https://accounts.google.com/o/oauth2/v2/auth');

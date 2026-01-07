@@ -1,0 +1,20 @@
+{
+  "name": "dochoax/echodoc-pdf-audio",
+  "description": "PDF to Audio conversion system with TTS",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": "^8.0",
+    "ext-pdo": "*",
+    "ext-json": "*",
+    "ext-curl": "*",
+    "ext-mbstring": "*",
+    "ext-zip": "*"
+  },
+  "require-dev": {},
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}
