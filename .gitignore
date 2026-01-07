@@ -1,0 +1,25 @@
+# Ignore files with sensitive credentials
+config.php
+includes/google_oauth.php
+
+# Uploads folder (except README)
+uploads/*
+!uploads/README.md
+!uploads/avatars/
+uploads/avatars/*
+!uploads/avatars/.gitkeep
+
+# System files
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
