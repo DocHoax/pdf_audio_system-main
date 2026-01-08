@@ -1,6 +1,7 @@
 # Digital Ocean App Platform Deployment Guide
 
 ## Prerequisites
+
 - Digital Ocean account
 - GitHub repository (already set up ✅)
 
@@ -21,12 +22,14 @@
 Digital Ocean will detect the `.do/app.yaml` config file automatically.
 
 **Web Service:**
+
 - Name: `web`
 - Environment: PHP 8.x
 - Instance Type: Basic (512MB RAM, 1 vCPU) - ~$5/month
 - HTTP Port: 8080
 
 **Database:**
+
 - Engine: MySQL 8
 - Plan: Basic (1GB RAM, 10GB storage, 1 node) - ~$15/month
 - Name: `db`
@@ -58,12 +61,14 @@ GOOGLE_REDIRECT_URI=https://your-app-name.ondigitalocean.app/google-callback.php
 After deployment, you need to import the database schema.
 
 **Option A: Using DO Console**
+
 1. Go to your Database in DO dashboard
 2. Click "Users & Databases" → "Create Database" → Name it `echodoc_db`
 3. Use the connection details to connect via MySQL client
 4. Import `database/setup.sql`
 
 **Option B: Using Connection String**
+
 ```bash
 # Get connection string from DO dashboard
 mysql -h <hostname> -u <username> -p<password> -P <port> echodoc_db < database/setup.sql
@@ -81,6 +86,7 @@ mysql -h <hostname> -u <username> -p<password> -P <port> echodoc_db < database/s
 ### 6. Deploy
 
 Click **"Create Resources"** and Digital Ocean will:
+
 - Build your app
 - Create managed MySQL database
 - Deploy to production
@@ -98,6 +104,7 @@ Click **"Create Resources"** and Digital Ocean will:
 ## Updating Your App
 
 Push changes to GitHub `main` branch:
+
 ```bash
 git add .
 git commit -m "Your changes"
@@ -116,16 +123,19 @@ Digital Ocean will automatically redeploy (if `deploy_on_push: true`).
 ## Troubleshooting
 
 **Issue: Database connection fails**
+
 - Check environment variables are set correctly
 - Verify database is running
 - Check firewall rules
 
 **Issue: File uploads fail**
+
 - Increase upload size limits in PHP settings
 - Check disk space
 - Verify `uploads/` directory permissions
 
 **Issue: Google OAuth fails**
+
 - Update redirect URI in Google Console
 - Check `GOOGLE_REDIRECT_URI` environment variable
 - Verify client ID and secret are correct
@@ -133,6 +143,7 @@ Digital Ocean will automatically redeploy (if `deploy_on_push: true`).
 ## Alternative: Use Droplet (~$6/month)
 
 If you prefer more control, deploy on a DO Droplet:
+
 1. Create Ubuntu Droplet
 2. Install LAMP stack
 3. Clone repository

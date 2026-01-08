@@ -5,24 +5,17 @@
  * Database connection settings for MySQL
  */
 
-// Check if running on Digital Ocean (environment variables set)
-$isProduction = getenv('APP_ENV') === 'production';
-
-if ($isProduction) {
-    // Production - Use environment variables from Digital Ocean
-    define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-    define('DB_NAME', getenv('DB_NAME') ?: 'echodoc_db');
-    define('DB_USER', getenv('DB_USER') ?: 'root');
-    define('DB_PASS', getenv('DB_PASS') ?: '');
-    define('DB_PORT', getenv('DB_PORT') ?: '3306');
-} else {
-    // Local development - Use local XAMPP settings
-    define('DB_HOST', 'localhost');
-    define('DB_NAME', 'echodoc_db');
-    define('DB_USER', 'root');
-    define('DB_PASS', ''); // Default XAMPP has no password
-    define('DB_PORT', '3306');
+// Load environment if not already loaded
+if (!function_exists('env')) {
+    require_once __DIR__ . '/../env.php';
 }
+
+// Database credentials from .env
+define('DB_HOST', env('DB_HOST', 'localhost'));
+define('DB_NAME', env('DB_NAME', 'echodoc_db'));
+define('DB_USER', env('DB_USER', 'root'));
+define('DB_PASS', env('DB_PASS', ''));
+define('DB_PORT', env('DB_PORT', '3306'));
 
 // PDO options
 define('DB_OPTIONS', [
