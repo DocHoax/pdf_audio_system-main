@@ -1,6 +1,4 @@
 # Ignore files with sensitive credentials
-config.php
-includes/google_oauth.php
 .env
 
 # Uploads folder (except README)
