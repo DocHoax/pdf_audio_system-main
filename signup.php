@@ -6,6 +6,8 @@
 require_once 'includes/auth.php';
 require_once 'includes/User.php';
 require_once 'includes/google_oauth.php';
+require_once 'includes/email.php';
+require_once 'includes/analytics.php';
 require_once 'config.php';
 
 // Redirect if already logged in
@@ -45,6 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $user->register($username, $email, $password, $fullName);
             
             if ($result['success']) {
+                // Send welcome email
+                sendWelcomeEmail($email, $fullName ?: $username);
+                
                 // Auto-login after registration
                 $loginResult = $user->login($username, $password);
                 if ($loginResult['success']) {

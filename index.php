@@ -168,7 +168,7 @@ function getUploadErrorMessage($errorCode) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -853,7 +853,8 @@ function getUploadErrorMessage($errorCode) {
     <?php endif; ?>
 
     <!-- JavaScript -->
-    <script src="assets/js/speech.js?v=13"></script>
-    <script src="assets/js/main.js?v=14"></script>
+    <script src="assets/js/analytics.js?v=1"></script>
+    <script src="assets/js/speech.js?v=14"></script>
+    <script src="assets/js/main.js?v=15"></script>
 </body>
 </html>

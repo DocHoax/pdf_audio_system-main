@@ -3,6 +3,9 @@
  * EchoDoc - Contact Page
  */
 
+require_once 'includes/email.php';
+require_once 'config.php';
+
 $contactMessage = '';
 $contactType = '';
 
@@ -21,14 +24,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $contactMessage = 'Please enter a valid email address.';
         $contactType = 'error';
     } else {
-        // In a real application, you would send an email here
-        // For now, we'll just show a success message
+        // Send confirmation email to user
+        sendContactConfirmation($email, $name);
+        
+        // Send notification to admin
+        sendContactToAdmin($name, $email, $subject, $message);
+        
         $contactMessage = 'Thank you for your message! We will get back to you soon.';
         $contactType = 'success';
         
-        // Optionally save to a file for demo purposes
+        // Log the contact for backup
         $logEntry = date('Y-m-d H:i:s') . " | Name: $name | Email: $email | Subject: $subject | Message: $message\n";
-        file_put_contents('contact_log.txt', $logEntry, FILE_APPEND);
+        @file_put_contents('contact_log.txt', $logEntry, FILE_APPEND);
     }
 }
 ?>
@@ -215,6 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </footer>
 
     <!-- JavaScript -->
+    <script src="assets/js/analytics.js?v=1"></script>
     <script src="assets/js/main.js"></script>
 </body>
 </html>

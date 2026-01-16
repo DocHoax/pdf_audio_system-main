@@ -319,6 +319,14 @@ async function speakText() {
         
         await audioElement.play();
         updateStatus(`Playing chunk ${currentChunkIndex + 1} of ${chunks.length}...`);
+        
+        // Track audio play analytics
+        if (typeof EchoAnalytics !== 'undefined') {
+            const fileNameElement = document.querySelector('.file-badge');
+            const docName = fileNameElement ? fileNameElement.textContent.trim() : null;
+            EchoAnalytics.audioPlay(docName, 0);
+            EchoAnalytics.ttsGenerate(currentText.length, selectedVoice);
+        }
     } catch (error) {
         console.error('TTS Error:', error);
         isLoading = false;
@@ -759,6 +767,11 @@ async function downloadAudio() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        
+        // Track download analytics
+        if (typeof EchoAnalytics !== 'undefined') {
+            EchoAnalytics.download(baseName, 'mp3');
+        }
         
         // Cleanup
         setTimeout(() => {
