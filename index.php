@@ -175,6 +175,8 @@ function getUploadErrorMessage($errorCode) {
     <meta name="description" content="EchoDoc - Transform PDF documents into natural-sounding audio with AI-powered voice synthesis">
     <meta name="keywords" content="PDF, Audio, Text to Speech, Accessibility, Reading Aid">
     <title>EchoDoc - Transform PDF to Audio</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/48/pdf.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">

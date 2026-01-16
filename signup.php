@@ -72,6 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="description" content="Create your EchoDoc account">
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
     <title>Sign Up - EchoDoc</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/48/pdf.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
