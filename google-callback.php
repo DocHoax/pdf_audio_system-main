@@ -3,6 +3,12 @@
  * EchoDoc - Google OAuth Callback Handler
  */
 
+// Enable error display for debugging (remove in production)
+if (isset($_GET['debug'])) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+}
+
 require_once 'includes/auth.php';
 require_once 'includes/google_oauth.php';
 require_once 'includes/User.php';
@@ -10,12 +16,14 @@ require_once 'includes/db_config.php';
 
 // Check for error from Google
 if (isset($_GET['error'])) {
+    error_log("Google OAuth error from Google: " . $_GET['error']);
     header('Location: login.php?error=google_denied');
     exit;
 }
 
 // Check for authorization code
 if (!isset($_GET['code'])) {
+    error_log("Google OAuth: No authorization code received");
     header('Location: login.php?error=google_failed');
     exit;
 }
@@ -26,7 +34,10 @@ $code = $_GET['code'];
 $tokenData = getGoogleAccessToken($code);
 
 if (!$tokenData || !isset($tokenData['access_token'])) {
-    header('Location: login.php?error=google_token_failed');
+    $errorMsg = isset($tokenData['error']) ? $tokenData['error'] : 'token_exchange_failed';
+    $errorDesc = isset($tokenData['error_description']) ? $tokenData['error_description'] : '';
+    error_log("Google OAuth token exchange failed: " . print_r($tokenData, true));
+    header('Location: login.php?error=google_token_failed&detail=' . urlencode($errorMsg . ' - ' . $errorDesc));
     exit;
 }
 
@@ -34,6 +45,7 @@ if (!$tokenData || !isset($tokenData['access_token'])) {
 $googleUser = getGoogleUserInfo($tokenData['access_token']);
 
 if (!$googleUser || !isset($googleUser['email'])) {
+    error_log("Google OAuth user info failed: " . print_r($googleUser, true));
     header('Location: login.php?error=google_user_failed');
     exit;
 }
@@ -48,7 +60,8 @@ $avatar = $googleUser['picture'] ?? null;
 $pdo = getDbConnection();
 
 if (!$pdo) {
-    header('Location: login.php?error=database_error');
+    error_log("Google OAuth: Database connection failed");
+    header('Location: login.php?error=database_error&detail=connection_failed');
     exit;
 }
 
@@ -143,6 +156,6 @@ try {
     
 } catch (PDOException $e) {
     error_log("Google OAuth DB Error: " . $e->getMessage());
-    header('Location: login.php?error=database_error');
+    header('Location: login.php?error=database_error&detail=' . urlencode($e->getMessage()));
     exit;
 }

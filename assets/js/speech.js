@@ -773,6 +773,9 @@ async function downloadAudio() {
             EchoAnalytics.download(baseName, 'mp3');
         }
         
+        // Send email notification that MP3 is ready
+        sendAudioReadyNotification(baseName + '.mp3');
+        
         // Cleanup
         setTimeout(() => {
             URL.revokeObjectURL(downloadUrl);
@@ -789,5 +792,33 @@ async function downloadAudio() {
     } finally {
         isDownloading = false;
         if (downloadBtn) downloadBtn.disabled = false;
+    }
+}
+
+/**
+ * Send email notification when audio is ready
+ */
+async function sendAudioReadyNotification(documentName) {
+    try {
+        const response = await fetch('api/notify-audio-ready.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                document_name: documentName
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('Audio ready notification sent');
+        } else {
+            console.log('Notification not sent:', data.error || data.message);
+        }
+    } catch (error) {
+        // Silently fail - notification is not critical
+        console.log('Could not send notification:', error.message);
     }
 }

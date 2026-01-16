@@ -22,12 +22,13 @@ if (isset($_GET['registered'])) {
 
 // Check for Google OAuth errors
 if (isset($_GET['error'])) {
+    $detail = isset($_GET['detail']) ? ' (' . htmlspecialchars(urldecode($_GET['detail'])) . ')' : '';
     $errorMessages = [
         'google_denied' => 'Google sign-in was cancelled.',
         'google_failed' => 'Google sign-in failed. Please try again.',
-        'google_token_failed' => 'Failed to authenticate with Google.',
+        'google_token_failed' => 'Failed to authenticate with Google.' . $detail,
         'google_user_failed' => 'Could not get user info from Google.',
-        'database_error' => 'Database error. Please try again.'
+        'database_error' => 'Database error.' . $detail
     ];
     $message = $errorMessages[$_GET['error']] ?? 'An error occurred. Please try again.';
     $messageType = 'error';

@@ -2,12 +2,21 @@
 /**
  * EchoDoc - Email Helper
  * 
- * Send emails using SMTP or PHP mail()
+ * Send emails using SMTP with PHPMailer
  * Supports email templates and queue
  */
 
 require_once __DIR__ . '/db_config.php';
 require_once __DIR__ . '/../env.php';
+
+// Include PHPMailer
+require_once __DIR__ . '/../vendor/phpmailer/src/Exception.php';
+require_once __DIR__ . '/../vendor/phpmailer/src/PHPMailer.php';
+require_once __DIR__ . '/../vendor/phpmailer/src/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 /**
  * Get email configuration
@@ -61,12 +70,41 @@ function sendEmailBasic($to, $subject, $bodyHtml, $bodyText = null, $toName = nu
 }
 
 /**
- * Send email using SMTP (requires PHPMailer or similar)
+ * Send email using SMTP with PHPMailer
  */
 function sendEmailSMTP($to, $subject, $bodyHtml, $bodyText, $toName, $config) {
-    // For production, you would use PHPMailer here
-    // For now, fall back to basic mail
-    return sendEmailBasic($to, $subject, $bodyHtml, $bodyText, $toName);
+    $mail = new PHPMailer(true);
+    
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host       = $config['smtp_host'];
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $config['smtp_user'];
+        $mail->Password   = $config['smtp_pass'];
+        $mail->SMTPSecure = $config['smtp_secure'] === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = (int)$config['smtp_port'];
+        
+        // Recipients
+        $mail->setFrom($config['from_email'], $config['from_name']);
+        $mail->addAddress($to, $toName ?? '');
+        $mail->addReplyTo($config['from_email'], $config['from_name']);
+        
+        // Content
+        $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8';
+        $mail->Subject = $subject;
+        $mail->Body    = $bodyHtml;
+        $mail->AltBody = $bodyText ?? strip_tags($bodyHtml);
+        
+        $mail->send();
+        return true;
+        
+    } catch (Exception $e) {
+        error_log("PHPMailer Error: " . $mail->ErrorInfo);
+        // Fall back to queue on failure
+        return queueEmail($to, $subject, $bodyHtml, $bodyText, $toName);
+    }
 }
 
 /**
@@ -147,15 +185,170 @@ function sendWelcomeEmail($userEmail, $username) {
     ]);
     
     if (!$template) {
-        // Fallback if template doesn't exist
+        // Beautiful fallback template
         $template = [
-            'subject' => 'Welcome to EchoDoc!',
-            'body_html' => "<h1>Welcome, $username!</h1><p>Thank you for joining EchoDoc.</p>",
-            'body_text' => "Welcome, $username! Thank you for joining EchoDoc."
+            'subject' => '🎉 Welcome to EchoDoc - Your Audio Journey Begins!',
+            'body_html' => getWelcomeEmailHtml($username, $config['app_url']),
+            'body_text' => "Welcome to EchoDoc, $username!\n\nThank you for joining us. You can now convert your PDFs and documents into high-quality audio files.\n\nGet started: {$config['app_url']}\n\nHappy listening!\nThe EchoDoc Team"
         ];
     }
     
-    return sendEmail($userEmail, $template['subject'], $template['body_html'], $template['body_text']);
+    return sendEmail($userEmail, $template['subject'], $template['body_html'], $template['body_text'], $username);
+}
+
+/**
+ * Get beautiful welcome email HTML
+ */
+function getWelcomeEmailHtml($username, $appUrl) {
+    return <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:40px 20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:40px;text-align:center;">
+                            <h1 style="color:#ffffff;margin:0;font-size:32px;">🎧 Welcome to EchoDoc!</h1>
+                        </td>
+                    </tr>
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding:40px;">
+                            <h2 style="color:#333;margin-top:0;">Hey {$username}! 👋</h2>
+                            <p style="color:#666;font-size:16px;line-height:1.6;">
+                                Thank you for joining EchoDoc! We're excited to help you transform your documents into audio.
+                            </p>
+                            <p style="color:#666;font-size:16px;line-height:1.6;">
+                                With EchoDoc, you can:
+                            </p>
+                            <ul style="color:#666;font-size:16px;line-height:2;">
+                                <li>📄 Convert PDFs and documents to audio</li>
+                                <li>🎤 Choose from 16+ natural voices</li>
+                                <li>🌍 Translate documents to different languages</li>
+                                <li>⬇️ Download MP3 files for offline listening</li>
+                            </ul>
+                            <div style="text-align:center;margin:30px 0;">
+                                <a href="{$appUrl}" style="display:inline-block;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#ffffff;text-decoration:none;padding:15px 40px;border-radius:30px;font-weight:bold;font-size:16px;">
+                                    Start Converting →
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color:#f8f9fa;padding:20px;text-align:center;">
+                            <p style="color:#999;font-size:14px;margin:0;">
+                                Happy listening! 🎵<br>
+                                <strong>The EchoDoc Team</strong>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+}
+
+/**
+ * Send MP3 ready notification email
+ */
+function sendMp3ReadyEmail($userEmail, $username, $documentName, $downloadUrl = null) {
+    $config = getEmailConfig();
+    
+    $template = getEmailTemplate('mp3_ready', [
+        'username' => $username,
+        'document_name' => $documentName,
+        'download_url' => $downloadUrl,
+        'app_url' => $config['app_url']
+    ]);
+    
+    if (!$template) {
+        // Beautiful fallback template
+        $template = [
+            'subject' => "🎧 Your audio is ready: $documentName",
+            'body_html' => getMp3ReadyEmailHtml($username, $documentName, $downloadUrl, $config['app_url']),
+            'body_text' => "Hi $username,\n\nGreat news! Your document \"$documentName\" has been converted to audio and is ready to listen.\n\nVisit EchoDoc to download: {$config['app_url']}\n\nHappy listening!\nThe EchoDoc Team"
+        ];
+    }
+    
+    return sendEmail($userEmail, $template['subject'], $template['body_html'], $template['body_text'], $username);
+}
+
+/**
+ * Get MP3 ready email HTML
+ */
+function getMp3ReadyEmailHtml($username, $documentName, $downloadUrl, $appUrl) {
+    $downloadButton = $downloadUrl 
+        ? "<a href=\"{$downloadUrl}\" style=\"display:inline-block;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#ffffff;text-decoration:none;padding:15px 40px;border-radius:30px;font-weight:bold;font-size:16px;margin:10px;\">⬇️ Download MP3</a>"
+        : "";
+    
+    return <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:40px 20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);padding:40px;text-align:center;">
+                            <h1 style="color:#ffffff;margin:0;font-size:32px;">🎧 Your Audio is Ready!</h1>
+                        </td>
+                    </tr>
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding:40px;">
+                            <h2 style="color:#333;margin-top:0;">Hi {$username}! 🎉</h2>
+                            <p style="color:#666;font-size:16px;line-height:1.6;">
+                                Great news! Your document has been successfully converted to audio:
+                            </p>
+                            <div style="background-color:#f8f9fa;border-radius:10px;padding:20px;margin:20px 0;text-align:center;">
+                                <p style="color:#333;font-size:18px;font-weight:bold;margin:0;">
+                                    📄 {$documentName}
+                                </p>
+                            </div>
+                            <p style="color:#666;font-size:16px;line-height:1.6;">
+                                You can now listen to your document or download the MP3 file for offline listening.
+                            </p>
+                            <div style="text-align:center;margin:30px 0;">
+                                {$downloadButton}
+                                <a href="{$appUrl}" style="display:inline-block;background-color:#f8f9fa;color:#667eea;text-decoration:none;padding:15px 40px;border-radius:30px;font-weight:bold;font-size:16px;margin:10px;border:2px solid #667eea;">
+                                    Open EchoDoc →
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color:#f8f9fa;padding:20px;text-align:center;">
+                            <p style="color:#999;font-size:14px;margin:0;">
+                                Happy listening! 🎵<br>
+                                <strong>The EchoDoc Team</strong>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
 }
 
 /**

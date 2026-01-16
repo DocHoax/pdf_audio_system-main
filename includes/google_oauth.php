@@ -55,14 +55,22 @@ function getGoogleAccessToken($code) {
     
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
     curl_close($ch);
     
-    if ($httpCode === 200) {
-        return json_decode($response, true);
+    $data = json_decode($response, true);
+    
+    if ($httpCode === 200 && isset($data['access_token'])) {
+        return $data;
     }
     
-    error_log("Google token error: " . $response);
-    return null;
+    error_log("Google token error (HTTP $httpCode): " . $response);
+    if ($curlError) {
+        error_log("cURL error: " . $curlError);
+    }
+    
+    // Return error info for debugging
+    return $data;
 }
 
 /**
