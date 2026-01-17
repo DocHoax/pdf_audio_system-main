@@ -361,23 +361,58 @@
     padding-top: 0.75rem;
 }
 
-/* Responsive */
-@media (max-width: 576px) {
+/* ========== Mobile Responsive Styles ========== */
+@media (max-width: 768px) {
     .auth-main {
         padding: 1rem;
+        min-height: calc(100vh - 120px);
+        align-items: flex-start;
+        padding-top: 2rem;
+    }
+    
+    .auth-container {
+        width: 100%;
+        max-width: 100%;
     }
     
     .auth-card {
         padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .auth-header {
+        margin-bottom: 1.5rem;
     }
     
     .auth-header img {
-        width: 64px;
-        height: 64px;
+        width: 60px;
+        height: 60px;
     }
     
     .auth-header h1 {
         font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .auth-header p {
+        font-size: 0.9rem;
+    }
+    
+    /* Form styling for mobile */
+    .auth-form {
+        gap: 1rem;
+    }
+    
+    .auth-form label {
+        font-size: 0.85rem;
+    }
+    
+    .auth-form .form-control {
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 52px;
+        padding: 0.875rem 1rem;
+        border-radius: 10px;
     }
     
     .form-options {
@@ -386,35 +421,131 @@
         align-items: flex-start;
     }
     
-    /* Mobile button improvements */
-    .auth-form .btn-primary,
-    .btn-google {
-        min-height: 48px; /* Touch-friendly size */
+    /* Primary button - Login/Signup */
+    .auth-form .btn-primary {
+        width: 100%;
+        min-height: 54px;
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 12px;
+        margin-top: 0.5rem;
+        background: linear-gradient(135deg, #3d5a80 0%, #2c4a6e 100%);
+        box-shadow: 0 4px 15px rgba(61, 90, 128, 0.35);
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
+        -webkit-appearance: none;
+        border: none;
     }
     
-    .auth-form .form-control {
-        font-size: 16px; /* Prevents zoom on iOS */
-        min-height: 48px;
+    .auth-form .btn-primary:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 8px rgba(61, 90, 128, 0.3);
     }
     
+    .auth-form .btn-primary img {
+        width: 22px;
+        height: 22px;
+    }
+    
+    /* Divider */
+    .auth-divider {
+        margin: 1.25rem 0;
+    }
+    
+    .auth-divider span {
+        font-size: 0.8rem;
+        padding: 0 0.5rem;
+    }
+    
+    /* Google button */
+    .btn-google {
+        width: 100%;
+        min-height: 54px;
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        -webkit-appearance: none;
+    }
+    
+    .btn-google:active {
+        transform: scale(0.98);
+        background: #f5f5f5;
+    }
+    
+    .btn-google img {
+        width: 22px;
+        height: 22px;
+    }
+    
+    /* Auth footer */
+    .auth-footer {
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+    }
+    
+    .auth-footer p {
+        font-size: 0.9rem;
+    }
+    
+    .auth-footer a {
+        font-size: 0.9rem;
+    }
+    
+    /* Password toggle */
     .toggle-password {
-        min-width: 44px;
-        min-height: 44px;
+        min-width: 48px;
+        min-height: 48px;
+        padding: 0.5rem;
+    }
+    
+    .toggle-password img {
+        width: 22px;
+        height: 22px;
+    }
+    
+    /* Alerts */
+    .auth-card .alert {
+        padding: 0.875rem;
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
+    
+    .auth-card .alert img {
+        width: 20px;
+        height: 20px;
     }
 }
 
-/* Additional mobile touch improvements */
-@media (max-width: 768px) {
-    .auth-form .btn-primary,
-    .btn-google {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
+/* Extra small devices */
+@media (max-width: 380px) {
+    .auth-main {
+        padding: 0.75rem;
     }
     
-    /* Ensure buttons are clickable */
+    .auth-card {
+        padding: 1.25rem;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.35rem;
+    }
+    
+    .auth-form .btn-primary,
+    .btn-google {
+        font-size: 1rem;
+        min-height: 50px;
+    }
+}
+
+/* Ensure buttons are always clickable */
+@media (max-width: 768px) {
     .auth-form button[type="submit"],
     .btn-google {
         cursor: pointer;
