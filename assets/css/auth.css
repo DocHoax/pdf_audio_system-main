@@ -385,6 +385,43 @@
         gap: 0.75rem;
         align-items: flex-start;
     }
+    
+    /* Mobile button improvements */
+    .auth-form .btn-primary,
+    .btn-google {
+        min-height: 48px; /* Touch-friendly size */
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    .auth-form .form-control {
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 48px;
+    }
+    
+    .toggle-password {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* Additional mobile touch improvements */
+@media (max-width: 768px) {
+    .auth-form .btn-primary,
+    .btn-google {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+    
+    /* Ensure buttons are clickable */
+    .auth-form button[type="submit"],
+    .btn-google {
+        cursor: pointer;
+        pointer-events: auto;
+        position: relative;
+        z-index: 1;
+    }
 }
 
 /* Login Button in Navbar */
