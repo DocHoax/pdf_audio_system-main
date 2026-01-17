@@ -1,6 +1,6 @@
 <?php
 /**
- * Database Setup Script
+ * Database Setup Script v2
  * Run this ONCE to set up the database tables
  * DELETE THIS FILE after setup!
  */
@@ -13,8 +13,9 @@ if (!isset($_GET['token']) || $_GET['token'] !== $setupToken) {
 
 require_once 'includes/db_config.php';
 
-echo "<h1>EchoDoc Database Setup</h1>";
+echo "<h1>EchoDoc Database Setup v2</h1>";
 echo "<pre>";
+echo "Script version: 2.0 - " . date('Y-m-d H:i:s') . "\n\n";
 
 $pdo = getDbConnection();
 
