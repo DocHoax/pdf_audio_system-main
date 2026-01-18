@@ -26,6 +26,8 @@ require_once 'includes/User.php';
 logDebug("User.php loaded");
 require_once 'includes/db_config.php';
 logDebug("db_config.php loaded");
+require_once 'includes/email.php';
+logDebug("email.php loaded");
 
 // Check for error from Google
 if (isset($_GET['error'])) {
@@ -161,6 +163,10 @@ try {
             VALUES (:user_id, 'Idera', 1.00, 'light')
         ");
         $settingsStmt->execute([':user_id' => $userId]);
+        
+        // Send welcome email to new Google user
+        logDebug("Sending welcome email to: $email");
+        sendWelcomeEmail($email, $fullName ?: $username);
         
         // Set session
         $userData = [
