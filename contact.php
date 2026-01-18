@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <img src="https://img.icons8.com/fluency/48/domain.png" alt="Website" style="width: 32px; height: 32px;">
                         <div>
                             <strong>Website</strong>
-                            <p>www.echodoc.app</p>
+                            <p><a href="https://echodoc-5vpfq.ondigitalocean.app/" target="_blank" rel="noopener noreferrer">echodoc-5vpfq.ondigitalocean.app</a></p>
                         </div>
                     </div>
                     
