@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <img src="https://img.icons8.com/fluency/48/email.png" alt="Email" style="width: 32px; height: 32px;">
                         <div>
                             <strong>Email</strong>
-                            <p>support@pdftoaudio.com</p>
+                            <p><a href="mailto:infoechodoc@gmail.com">infoechodoc@gmail.com</a></p>
                         </div>
                     </div>
                     
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <img src="https://img.icons8.com/fluency/48/domain.png" alt="Website" style="width: 32px; height: 32px;">
                         <div>
                             <strong>Website</strong>
-                            <p>www.pdftoaudio.com</p>
+                            <p>www.echodoc.app</p>
                         </div>
                     </div>
                     
@@ -154,32 +154,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <h2><img src="https://img.icons8.com/fluency/48/share--v1.png" alt="Share" style="width: 32px; height: 32px; vertical-align: middle;"> Connect With Us</h2>
                     <div class="tech-stack">
                         <div class="tech-item">
-                            <img src="https://img.icons8.com/color/48/facebook-new.png" alt="Facebook" style="width: 40px; height: 40px;">
-                            <div>
-                                <strong>Facebook</strong>
-                                <p>@pdftoaudio</p>
-                            </div>
+                            <a href="https://x.com/echodoc" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                <div>
+                                    <strong>X (Twitter)</strong>
+                                    <p>@echodoc</p>
+                                </div>
+                            </a>
                         </div>
                         <div class="tech-item">
-                            <img src="https://img.icons8.com/color/48/twitter--v1.png" alt="Twitter" style="width: 40px; height: 40px;">
-                            <div>
-                                <strong>Twitter</strong>
-                                <p>@pdftoaudio</p>
-                            </div>
-                        </div>
-                        <div class="tech-item">
-                            <img src="https://img.icons8.com/color/48/linkedin.png" alt="LinkedIn" style="width: 40px; height: 40px;">
-                            <div>
-                                <strong>LinkedIn</strong>
-                                <p>EchoDoc</p>
-                            </div>
-                        </div>
-                        <div class="tech-item">
-                            <img src="https://img.icons8.com/color/48/github--v1.png" alt="GitHub" style="width: 40px; height: 40px;">
-                            <div>
-                                <strong>GitHub</strong>
-                                <p>pdftoaudio</p>
-                            </div>
+                            <a href="mailto:infoechodoc@gmail.com" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
+                                <img src="https://img.icons8.com/fluency/48/email.png" alt="Email" style="width: 40px; height: 40px;">
+                                <div>
+                                    <strong>Email</strong>
+                                    <p>infoechodoc@gmail.com</p>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -212,6 +202,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <li><img src="https://img.icons8.com/officel/48/php-logo.png" alt="PHP" style="width: 16px; height: 16px;"> PHP 7+</li>
                         <li><img src="https://img.icons8.com/color/48/javascript--v1.png" alt="JS" style="width: 16px; height: 16px;"> JavaScript</li>
                         <li><img src="https://img.icons8.com/fluency/48/high-volume--v1.png" alt="Audio" style="width: 16px; height: 16px;"> YarnGPT API</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <ul>
+                        <li><a href="https://x.com/echodoc" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> @echodoc</a></li>
+                        <li><a href="mailto:infoechodoc@gmail.com"><img src="https://img.icons8.com/fluency/48/email.png" alt="Email" style="width: 16px; height: 16px;"> infoechodoc@gmail.com</a></li>
                     </ul>
                 </div>
             </div>
