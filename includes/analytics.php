@@ -161,19 +161,142 @@ function getAnalyticsSummary($days = 30) {
         $stmt->execute([':days' => $days]);
         $summary['top_documents'] = $stmt->fetchAll();
         
-        // Popular voices
+        // Popular voices (from both play_audio and tts_generate events)
         $stmt = $pdo->prepare("
             SELECT 
                 JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.voice')) as voice,
                 COUNT(*) as use_count
             FROM user_analytics
-            WHERE event_type = 'play_audio' AND created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+            WHERE (event_type = 'play_audio' OR event_type = 'tts_generate' OR event_type = 'tts')
+            AND created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+            AND JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.voice')) IS NOT NULL
             GROUP BY voice
             ORDER BY use_count DESC
             LIMIT 10
         ");
         $stmt->execute([':days' => $days]);
         $summary['popular_voices'] = $stmt->fetchAll();
+        
+        // TTS generation stats
+        $stmt = $pdo->prepare("
+            SELECT COUNT(*) as total 
+            FROM user_analytics 
+            WHERE (event_type = 'tts_generate' OR event_type = 'tts')
+            AND created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+        ");
+        $stmt->execute([':days' => $days]);
+        $summary['total_tts_generations'] = $stmt->fetch()['total'];
+        
+        // Total characters processed by TTS
+        $stmt = $pdo->prepare("
+            SELECT COALESCE(SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.text_length')) AS UNSIGNED)), 0) as total_chars
+            FROM user_analytics
+            WHERE (event_type = 'tts_generate' OR event_type = 'tts')
+            AND created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+        ");
+        $stmt->execute([':days' => $days]);
+        $summary['total_tts_characters'] = $stmt->fetch()['total_chars'];
+        
+        // Translation stats - total translations
+        $stmt = $pdo->prepare("
+            SELECT COUNT(*) as total 
+            FROM user_analytics 
+            WHERE event_type = 'translate'
+            AND created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+        ");
+        $stmt->execute([':days' => $days]);
+        $summary['total_translations'] = $stmt->fetch()['total'];
+        
+        // Popular target languages
+        $stmt = $pdo->prepare("
+            SELECT 
+                JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.target_lang')) as language,
+                COUNT(*) as use_count
+            FROM user_analytics
+            WHERE event_type = 'translate'
+            AND created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+            AND JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.target_lang')) IS NOT NULL
+            GROUP BY language
+            ORDER BY use_count DESC
+            LIMIT 10
+        ");
+        $stmt->execute([':days' => $days]);
+        $summary['popular_languages'] = $stmt->fetchAll();
+        
+        // Voice usage over time (for chart)
+        $stmt = $pdo->prepare("
+            SELECT 
+                DATE(created_at) as date,
+                JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.voice')) as voice,
+                COUNT(*) as use_count
+            FROM user_analytics
+            WHERE (event_type = 'play_audio' OR event_type = 'tts_generate' OR event_type = 'tts')
+            AND created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+            AND JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.voice')) IS NOT NULL
+            GROUP BY DATE(created_at), voice
+            ORDER BY date ASC
+        ");
+        $stmt->execute([':days' => $days]);
+        $summary['voice_usage_over_time'] = $stmt->fetchAll();
+        
+        // File type breakdown (PDF vs DOCX uploads)
+        $stmt = $pdo->prepare("
+            SELECT 
+                JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.file_type')) as file_type,
+                COUNT(*) as upload_count
+            FROM user_analytics
+            WHERE event_type = 'upload'
+            AND created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+            GROUP BY file_type
+            ORDER BY upload_count DESC
+        ");
+        $stmt->execute([':days' => $days]);
+        $summary['file_type_breakdown'] = $stmt->fetchAll();
+        
+        // Hourly usage pattern
+        $stmt = $pdo->prepare("
+            SELECT 
+                HOUR(created_at) as hour,
+                COUNT(*) as event_count
+            FROM user_analytics
+            WHERE created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+            GROUP BY HOUR(created_at)
+            ORDER BY hour ASC
+        ");
+        $stmt->execute([':days' => $days]);
+        $summary['hourly_usage'] = $stmt->fetchAll();
+        
+        // Most active users
+        $stmt = $pdo->prepare("
+            SELECT 
+                ua.user_id,
+                u.username,
+                u.email,
+                COUNT(*) as event_count
+            FROM user_analytics ua
+            LEFT JOIN users u ON ua.user_id = u.id
+            WHERE ua.user_id IS NOT NULL
+            AND ua.created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+            GROUP BY ua.user_id, u.username, u.email
+            ORDER BY event_count DESC
+            LIMIT 10
+        ");
+        $stmt->execute([':days' => $days]);
+        $summary['most_active_users'] = $stmt->fetchAll();
+        
+        // Download format stats
+        $stmt = $pdo->prepare("
+            SELECT 
+                COALESCE(JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.format')), 'mp3') as format,
+                COUNT(*) as download_count
+            FROM user_analytics
+            WHERE (event_type = 'download_mp3' OR event_type = 'download')
+            AND created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+            GROUP BY format
+            ORDER BY download_count DESC
+        ");
+        $stmt->execute([':days' => $days]);
+        $summary['download_formats'] = $stmt->fetchAll();
         
         return $summary;
         

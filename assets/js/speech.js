@@ -324,7 +324,7 @@ async function speakText() {
         if (typeof EchoAnalytics !== 'undefined') {
             const fileNameElement = document.querySelector('.file-badge');
             const docName = fileNameElement ? fileNameElement.textContent.trim() : null;
-            EchoAnalytics.audioPlay(docName, 0);
+            EchoAnalytics.audioPlay(docName, selectedVoice, 0);
             EchoAnalytics.ttsGenerate(currentText.length, selectedVoice);
         }
     } catch (error) {

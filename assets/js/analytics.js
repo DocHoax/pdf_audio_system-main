@@ -44,10 +44,11 @@ const EchoAnalytics = {
     /**
      * Track audio play
      * @param {string} document - Document name
+     * @param {string} voice - Voice used
      * @param {number} duration - Duration in seconds
      */
-    audioPlay: function(document = null, duration = 0) {
-        this.track('audio_play', { document, duration });
+    audioPlay: function(document = null, voice = 'default', duration = 0) {
+        this.track('audio_play', { document, voice, duration });
     },
 
     /**

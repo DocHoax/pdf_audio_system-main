@@ -35,48 +35,59 @@ try {
     switch ($event) {
         case 'page_view':
             $page = $data['page'] ?? 'unknown';
-            trackPageView($page, $userId);
+            trackEvent('page_view', ['page' => $page], $userId);
             break;
             
         case 'upload':
             $fileType = $data['file_type'] ?? 'unknown';
             $fileSize = $data['file_size'] ?? 0;
-            trackUpload($userId, $fileType, $fileSize);
+            trackEvent('upload', [
+                'file_type' => $fileType,
+                'file_size' => $fileSize
+            ], $userId);
             break;
             
         case 'audio_play':
             $document = $data['document'] ?? null;
+            $voice = $data['voice'] ?? 'default';
             $duration = $data['duration'] ?? 0;
-            trackAudioPlay($userId, $document, $duration);
+            trackEvent('play_audio', [
+                'document' => $document,
+                'voice' => $voice,
+                'duration' => $duration
+            ], $userId);
             break;
             
         case 'download':
             $document = $data['document'] ?? null;
             $format = $data['format'] ?? 'mp3';
-            trackDownload($userId, $document, $format);
+            trackEvent('download_mp3', [
+                'document' => $document,
+                'format' => $format
+            ], $userId);
             break;
             
         case 'tts':
             $textLength = $data['text_length'] ?? 0;
             $voice = $data['voice'] ?? 'default';
-            trackEvent($userId, 'tts_generate', [
+            trackEvent('tts_generate', [
                 'text_length' => $textLength,
                 'voice' => $voice
-            ]);
+            ], $userId);
             break;
             
         case 'translate':
             $sourceLang = $data['source_lang'] ?? 'unknown';
             $targetLang = $data['target_lang'] ?? 'unknown';
-            trackEvent($userId, 'translate', [
+            trackEvent('translate', [
                 'source_lang' => $sourceLang,
                 'target_lang' => $targetLang
-            ]);
+            ], $userId);
             break;
             
         default:
             // Generic event tracking
-            trackEvent($userId, $event, $data);
+            trackEvent($event, $data, $userId);
     }
     
     echo json_encode(['success' => true]);
