@@ -336,7 +336,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; <?php echo date('Y'); ?> EchoDoc. All rights reserved.</p>
+                <p>&copy; <?php echo date('Y'); ?> EchoDoc. All rights reserved. — <a href="mailto:infoechodoc@gmail.com?subject=EchoDoc%20Bug%20Report" rel="noopener">Report a bug</a></p>
             </div>
         </div>
     </footer>
