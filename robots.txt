@@ -1,5 +1,5 @@
 User-agent: *
 Disallow:
 
-# Point to sitemap
-Sitemap: <?php echo (defined('APP_URL') ? APP_URL : 'http://localhost/pdf_audio_system-main'); ?>/sitemap.php
+# Sitemap (update `APP_URL` in production if you use a custom domain)
+Sitemap: https://echodoc-5vpfq.ondigitalocean.app/sitemap.php

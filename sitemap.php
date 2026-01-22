@@ -27,8 +27,9 @@ $pages = [
 header('Content-Type: application/xml; charset=utf-8');
 $lastmod = date('Y-m-d');
 
-echo '<?xml version="1.0" encoding="UTF-8"?>\n';
-echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+// Emit XML declaration and root element with proper newlines
+echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+echo "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
 
 foreach ($pages as $p) {
     $url = $base . (strpos($p, '/') === 0 ? $p : '/' . ltrim($p, '/'));
