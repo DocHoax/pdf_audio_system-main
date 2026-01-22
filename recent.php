@@ -42,13 +42,11 @@ $metaTitle = 'Recent Files - EchoDoc';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include 'includes/performance.php'; ?>
     <title><?php echo htmlspecialchars($metaTitle); ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=8">
     <?php include 'includes/seo.php'; ?>
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Ovo&family=Pacifico&display=swap" rel="stylesheet">
     <style>
         .recent-files-container {
             max-width: 900px;

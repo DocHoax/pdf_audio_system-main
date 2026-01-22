@@ -172,14 +172,12 @@ function getUploadErrorMessage($errorCode) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include 'includes/performance.php'; ?>
     <meta name="google-site-verification" content="Hs65gDOL_s4YG9yZLSttXykvcasVtI-YmrziXxL7pWs" />
     <title>EchoDoc - Transform PDF to Audio</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/48/pdf.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=7">
+    <link rel="stylesheet" href="assets/css/style.css?v=8">
     <link rel="stylesheet" href="assets/css/auth.css?v=2">
     <?php include 'includes/seo.php'; ?>
 </head>
@@ -860,8 +858,8 @@ function getUploadErrorMessage($errorCode) {
     <?php endif; ?>
 
     <!-- JavaScript -->
-    <script src="assets/js/analytics.js?v=1"></script>
+    <script src="assets/js/analytics.js?v=1" defer></script>
     <script src="assets/js/speech.js?v=14"></script>
-    <script src="assets/js/main.js?v=15"></script>
+    <script src="assets/js/main.js?v=15" defer></script>
 </body>
 </html>
