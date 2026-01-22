@@ -2,15 +2,31 @@
 /**
  * EchoDoc - Help Page
  */
+require_once 'config.php';
+
+// Page-specific SEO
+$metaTitle = 'Help & Documentation - EchoDoc';
+$metaDescription = 'Learn how to use EchoDoc to convert PDF documents to audio. Step-by-step guide, FAQs, troubleshooting tips, and browser support information.';
+$metaKeywords = 'EchoDoc help, PDF to audio guide, text to speech tutorial, how to use EchoDoc, FAQ, troubleshooting';
+
+// FAQ Schema for rich results
+$faqSchema = [
+    ['question' => 'What types of PDF files are supported?', 'answer' => 'The system supports PDF files that contain selectable text. Scanned documents (image-based PDFs) may not work properly as they don\'t contain actual text data. For best results, use PDFs that were created digitally rather than scanned from paper.'],
+    ['question' => 'What is the maximum file size allowed?', 'answer' => 'The maximum file size is 10MB. This is sufficient for most text documents. If your PDF is larger, consider splitting it into smaller sections or removing embedded images to reduce file size.'],
+    ['question' => 'Why can\'t I hear any audio?', 'answer' => 'Make sure your device\'s volume is turned up and not muted. Also check that your browser supports the Web Speech API (Chrome, Edge, Safari, and Firefox are supported). Try refreshing the page and uploading your PDF again.'],
+    ['question' => 'What languages are supported?', 'answer' => 'EchoDoc supports English and Nigerian languages including Yoruba, Hausa, and Igbo through the YarnGPT API. The voice selector shows all available options.'],
+    ['question' => 'Is my PDF stored on the server?', 'answer' => 'PDF files are temporarily uploaded for text extraction. You can clear your session data at any time by clicking "Clear & Upload New PDF" button. We recommend not uploading sensitive or confidential documents.'],
+    ['question' => 'Can I download the audio file?', 'answer' => 'Yes! Click the "Download MP3" button to download the audio file. The text is converted using the YarnGPT API and the audio is saved as an MP3 file.'],
+    ['question' => 'Does it work on mobile devices?', 'answer' => 'Yes! EchoDoc is fully responsive and works on smartphones and tablets. Text-to-speech capabilities may vary depending on your mobile browser and device settings.']
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Help and Documentation for EchoDoc">
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
-    <title>Help - EchoDoc</title>
+    <title><?php echo htmlspecialchars($metaTitle); ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
     <?php include 'includes/seo.php'; ?>
 </head>

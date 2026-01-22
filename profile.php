@@ -131,15 +131,18 @@ if (!$userData) {
     $userData = $user;
     $userData['is_premium'] = $userData['is_premium'] ?? 0;
 }
+
+// SEO - noindex for user-specific page
+$noIndex = true;
+$metaTitle = 'My Profile - EchoDoc';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Your EchoDoc Profile">
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
-    <title>My Profile - EchoDoc</title>
+    <title><?php echo htmlspecialchars($metaTitle); ?></title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/48/pdf.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">

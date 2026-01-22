@@ -22,6 +22,10 @@ $languageNames = [
     'en' => 'English',
     'unknown' => 'Unknown'
 ];
+
+// SEO - noindex for admin-only page
+$noIndex = true;
+$metaTitle = 'Analytics Dashboard - EchoDoc';
 ?>
 <!DOCTYPE html>
 <html lang="en">

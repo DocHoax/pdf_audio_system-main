@@ -2,15 +2,20 @@
 /**
  * EchoDoc - About Page
  */
+require_once 'config.php';
+
+// Page-specific SEO
+$metaTitle = 'About EchoDoc - Our Mission & Technology';
+$metaDescription = 'Learn about EchoDoc\'s mission to improve accessibility through AI-powered PDF to audio conversion. Discover our technology stack and objectives.';
+$metaKeywords = 'about EchoDoc, PDF accessibility, text to speech technology, reading disabilities, document reader mission';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="About EchoDoc - Learn about our mission and technology">
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
-    <title>About - EchoDoc</title>
+    <title><?php echo htmlspecialchars($metaTitle); ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
     <?php include 'includes/seo.php'; ?>
 </head>

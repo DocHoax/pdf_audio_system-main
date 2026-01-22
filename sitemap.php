@@ -8,18 +8,17 @@ if (empty($base)) {
     $base = 'http://localhost/pdf_audio_system-main';
 }
 
-// List of pages to include in sitemap
+// List of pages to include in sitemap with priorities
+// Higher priority = more important for search engines
 $pages = [
-    '/',
-    '/index.php',
-    '/about.php',
-    '/help.php',
-    '/contact.php',
-    '/signup.php',
-    '/login.php',
-    '/profile.php',
-    '/recent.php',
-    '/analytics.php'
+    '/' => 1.0,
+    '/index.php' => 1.0,
+    '/about.php' => 0.8,
+    '/help.php' => 0.8,
+    '/contact.php' => 0.7,
+    '/signup.php' => 0.6,
+    '/login.php' => 0.5
+    // Excluded: /profile.php, /recent.php, /analytics.php (private/user-specific pages)
 ];
 
 // Additional dynamic pages could be added here (e.g., uploaded documents)
@@ -31,7 +30,7 @@ $lastmod = date('Y-m-d');
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 echo "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
 
-foreach ($pages as $p) {
+foreach ($pages as $p => $priority) {
     $url = $base . (strpos($p, '/') === 0 ? $p : '/' . ltrim($p, '/'));
     // Try to get last modified time of file
     $filePath = __DIR__ . ($p === '/' ? '/index.php' : $p);
@@ -39,11 +38,12 @@ foreach ($pages as $p) {
     if (file_exists($filePath)) {
         $lm = date('Y-m-d', filemtime($filePath));
     }
+    $changefreq = $priority >= 0.8 ? 'weekly' : 'monthly';
     echo "  <url>\n";
     echo "    <loc>" . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . "</loc>\n";
     echo "    <lastmod>$lm</lastmod>\n";
-    echo "    <changefreq>weekly</changefreq>\n";
-    echo "    <priority>0.6</priority>\n";
+    echo "    <changefreq>$changefreq</changefreq>\n";
+    echo "    <priority>$priority</priority>\n";
     echo "  </url>\n";
 }
 

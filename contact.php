@@ -44,15 +44,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         @file_put_contents('contact_log.txt', $logEntry, FILE_APPEND);
     }
 }
+
+// Page-specific SEO
+$metaTitle = 'Contact EchoDoc - Get in Touch';
+$metaDescription = 'Have questions about EchoDoc? Contact our support team for help with PDF to audio conversion, accessibility features, or technical support.';
+$metaKeywords = 'contact EchoDoc, support, help, feedback, PDF to audio help';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Contact EchoDoc - Get in touch with us">
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
-    <title>Contact - EchoDoc</title>
+    <title><?php echo htmlspecialchars($metaTitle); ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
     <?php include 'includes/seo.php'; ?>
 </head>

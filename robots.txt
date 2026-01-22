@@ -1,5 +1,19 @@
-User-agent: *
-Disallow:
+# EchoDoc Robots.txt
+# https://www.robotstxt.org/
 
-# Sitemap (update `APP_URL` in production if you use a custom domain)
+User-agent: *
+Allow: /
+
+# Disallow private/user-specific pages
+Disallow: /profile.php
+Disallow: /recent.php
+Disallow: /analytics.php
+Disallow: /uploads/
+Disallow: /api/
+Disallow: /includes/
+Disallow: /clear_session.php
+Disallow: /logout.php
+Disallow: /google-callback.php
+
+# Sitemap location
 Sitemap: https://echodoc-5vpfq.ondigitalocean.app/sitemap.php
