@@ -9,12 +9,18 @@ require_once 'config.php';
 $contactMessage = '';
 $contactType = '';
 
-// Handle form submission
+// Handle form submission and allow prefill via GET (e.g., ?subject=Bug%20Report)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $subject = trim($_POST['subject'] ?? '');
     $message = trim($_POST['message'] ?? '');
+} else {
+    // Prefill subject from GET while keeping other fields empty
+    $name = '';
+    $email = '';
+    $subject = trim($_GET['subject'] ?? '');
+    $message = '';
     
     // Basic validation
     if (empty($name) || empty($email) || empty($subject) || empty($message)) {
@@ -96,22 +102,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form action="contact.php" method="POST">
                         <div class="form-group">
                             <label for="name"><img src="https://img.icons8.com/fluency/48/user-male-circle--v1.png" alt="User" style="width: 20px; height: 20px; vertical-align: middle;"> Your Name</label>
-                            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                            <input type="text" id="name" name="name" placeholder="Enter your full name" required value="<?php echo htmlspecialchars($name); ?>">
                         </div>
                         
                         <div class="form-group">
                             <label for="email"><img src="https://img.icons8.com/fluency/48/email.png" alt="Email" style="width: 20px; height: 20px; vertical-align: middle;"> Email Address</label>
-                            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                            <input type="email" id="email" name="email" placeholder="Enter your email address" required value="<?php echo htmlspecialchars($email); ?>">
                         </div>
                         
                         <div class="form-group">
                             <label for="subject"><img src="https://img.icons8.com/fluency/48/price-tag--v1.png" alt="Tag" style="width: 20px; height: 20px; vertical-align: middle;"> Subject</label>
-                            <input type="text" id="subject" name="subject" placeholder="What is this about?" required>
+                            <input type="text" id="subject" name="subject" placeholder="What is this about?" required value="<?php echo htmlspecialchars($subject); ?>">
                         </div>
                         
                         <div class="form-group">
                             <label for="message"><img src="https://img.icons8.com/fluency/48/speech-bubble--v1.png" alt="Message" style="width: 20px; height: 20px; vertical-align: middle;"> Message</label>
-                            <textarea id="message" name="message" rows="6" placeholder="Write your message here..." required></textarea>
+                            <textarea id="message" name="message" rows="6" placeholder="Write your message here..." required><?php echo htmlspecialchars($message); ?></textarea>
                         </div>
                         
                         <button type="submit" class="btn btn-primary btn-block">
@@ -148,6 +154,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
                 </div>
+                
+                <script>
+                document.addEventListener('DOMContentLoaded', function(){
+                    try {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        if (urlParams.has('subject')) {
+                            const msg = document.getElementById('message');
+                            if (msg) msg.focus();
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
+                });
+                </script>
 
                 <!-- Social Media Links -->
                 <div class="about-content">
@@ -213,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; <?php echo date('Y'); ?> EchoDoc. All rights reserved. — <a href="mailto:infoechodoc@gmail.com?subject=EchoDoc%20Bug%20Report" rel="noopener">Report a bug</a></p>
+                <p>&copy; <?php echo date('Y'); ?> EchoDoc. All rights reserved. — <a href="contact.php?subject=Bug%20Report" rel="noopener" onclick="if(typeof EchoAnalytics!=='undefined'){EchoAnalytics.track('report_bug_click');}">Report a bug</a></p>
             </div>
         </div>
     </footer>
