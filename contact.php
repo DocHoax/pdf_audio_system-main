@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
     <title>Contact - EchoDoc</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <?php include 'includes/seo.php'; ?>
 </head>
 <body>
     <!-- Navigation -->

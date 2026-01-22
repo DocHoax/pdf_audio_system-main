@@ -40,6 +40,7 @@ $recentFiles = $_SESSION[$recentKey] ?? [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recent Files - EchoDoc</title>
     <link rel="stylesheet" href="assets/css/style.css">
+        <?php include 'includes/seo.php'; ?>
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

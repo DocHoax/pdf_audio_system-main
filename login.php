@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css?v=3">
     <link rel="stylesheet" href="assets/css/auth.css?v=3">
+        <?php include 'includes/seo.php'; ?>
 </head>
 <body>
     <!-- Navigation -->
