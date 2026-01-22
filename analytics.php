@@ -7,11 +7,8 @@ require_once 'includes/auth.php';
 require_once 'includes/analytics.php';
 require_once 'config.php';
 
-// Check if user is logged in and is admin (for now, just check logged in)
-if (!isLoggedIn()) {
-    header('Location: login.php');
-    exit;
-}
+// Check if user is logged in AND is admin
+requireAdmin();
 
 // Get analytics data
 $days = isset($_GET['days']) ? (int)$_GET['days'] : 30;

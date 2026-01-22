@@ -59,6 +59,49 @@ function getCurrentUser() {
 }
 
 /**
+ * Check if current user is an admin
+ * Admin is identified by:
+ * 1. is_admin flag in database
+ * 2. Email matching ADMIN_EMAIL environment variable
+ * @return bool
+ */
+function isAdmin() {
+    if (!isLoggedIn()) {
+        return false;
+    }
+    
+    $user = getCurrentUser();
+    if (!$user) {
+        return false;
+    }
+    
+    // Check is_admin flag in user data
+    if (isset($user['is_admin']) && $user['is_admin']) {
+        return true;
+    }
+    
+    // Check if user email matches ADMIN_EMAIL from environment
+    $adminEmail = getenv('ADMIN_EMAIL') ?: ($_ENV['ADMIN_EMAIL'] ?? null);
+    if ($adminEmail && isset($user['email']) && strtolower($user['email']) === strtolower($adminEmail)) {
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * Require admin access - redirect to home if not admin
+ */
+function requireAdmin() {
+    requireAuth(); // First ensure user is logged in
+    
+    if (!isAdmin()) {
+        header('Location: index.php');
+        exit;
+    }
+}
+
+/**
  * Set user session after login
  * @param array $user User data from database
  */
