@@ -172,6 +172,7 @@ function getUploadErrorMessage($errorCode) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="Hs65gDOL_s4YG9yZLSttXykvcasVtI-YmrziXxL7pWs" />
     <meta name="description" content="EchoDoc - Transform PDF documents into natural-sounding audio with AI-powered voice synthesis">
     <meta name="keywords" content="PDF, Audio, Text to Speech, Accessibility, Reading Aid">
     <title>EchoDoc - Transform PDF to Audio</title>
