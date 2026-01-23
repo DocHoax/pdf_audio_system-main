@@ -117,29 +117,40 @@ $metaKeywords = 'EchoDoc stats, PDF reader statistics, Nigerian language usage, 
     <link rel="stylesheet" href="assets/css/pages.css">
     <?php include 'includes/seo.php'; ?>
     <style>
+        /* Stats Page - Clean Modern Design */
+        :root {
+            --stats-accent: #3d5a80;
+            --stats-accent-light: #e8f0f7;
+            --stats-text-dark: #1a1a2e;
+            --stats-text-muted: #6c757d;
+            --stats-border: #e9ecef;
+            --stats-bg: #f8f9fa;
+        }
+        
         .stats-hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 4rem 1rem;
+            background: var(--stats-bg);
+            padding: 3rem 1rem 5rem;
             text-align: center;
-            color: #fff;
+            border-bottom: 1px solid var(--stats-border);
         }
         
         .stats-hero h1 {
-            font-size: 2.5rem;
-            margin: 0 0 0.75rem;
-            font-weight: 800;
+            font-size: 2.25rem;
+            margin: 0 0 0.5rem;
+            font-weight: 700;
+            color: var(--stats-text-dark);
         }
         
         .stats-hero p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 600px;
+            font-size: 1rem;
+            color: var(--stats-text-muted);
+            max-width: 500px;
             margin: 0 auto;
         }
         
         .stats-container {
-            max-width: 1100px;
-            margin: -3rem auto 3rem;
+            max-width: 1000px;
+            margin: -2.5rem auto 3rem;
             padding: 0 1rem;
         }
         
@@ -147,45 +158,44 @@ $metaKeywords = 'EchoDoc stats, PDF reader statistics, Nigerian language usage, 
         .main-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
         }
         
         .stat-card {
             background: #fff;
-            border-radius: 20px;
-            padding: 2rem;
+            border-radius: 16px;
+            padding: 1.75rem;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            border: 1px solid var(--stats-border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
         }
         
         .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border-color: var(--stats-accent);
+            box-shadow: 0 4px 16px rgba(61, 90, 128, 0.1);
         }
         
         .stat-icon {
-            width: 64px;
-            height: 64px;
-            margin-bottom: 1rem;
+            width: 52px;
+            height: 52px;
+            margin-bottom: 0.75rem;
         }
         
         .stat-value {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--stats-accent);
             margin-bottom: 0.25rem;
+            line-height: 1.1;
         }
         
         .stat-label {
-            color: #6c757d;
-            font-size: 1rem;
+            color: var(--stats-text-muted);
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             font-weight: 600;
         }
         
@@ -193,34 +203,36 @@ $metaKeywords = 'EchoDoc stats, PDF reader statistics, Nigerian language usage, 
         .leaderboards {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
         }
         
         .leaderboard-card {
             background: #fff;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--stats-border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
         
         .leaderboard-header {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.875rem;
+            border-bottom: 1px solid var(--stats-border);
         }
         
         .leaderboard-header img {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
         }
         
         .leaderboard-header h2 {
-            font-size: 1.25rem;
-            color: #1a1a2e;
+            font-size: 1.1rem;
+            color: var(--stats-text-dark);
             margin: 0;
+            font-weight: 600;
         }
         
         .leaderboard-list {
@@ -232,93 +244,108 @@ $metaKeywords = 'EchoDoc stats, PDF reader statistics, Nigerian language usage, 
         .leaderboard-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 0.5rem;
-            background: #f8f9fa;
+            gap: 0.875rem;
+            padding: 0.875rem;
+            border-radius: 10px;
+            margin-bottom: 0.375rem;
+            background: var(--stats-bg);
+            border: 1px solid transparent;
             transition: all 0.2s ease;
         }
         
+        .leaderboard-item:last-child {
+            margin-bottom: 0;
+        }
+        
         .leaderboard-item:hover {
-            background: #e9ecef;
-            transform: translateX(4px);
+            border-color: var(--stats-accent);
+            background: var(--stats-accent-light);
         }
         
         .rank {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             flex-shrink: 0;
         }
         
         .rank-1 {
-            background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
-            color: #000;
+            background: #fef3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
         }
         
         .rank-2 {
-            background: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%);
-            color: #000;
+            background: #e9ecef;
+            color: #495057;
+            border: 1px solid #adb5bd;
         }
         
         .rank-3 {
-            background: linear-gradient(135deg, #cd7f32 0%, #b87333 100%);
-            color: #fff;
+            background: #f5e6d3;
+            color: #8b4513;
+            border: 1px solid #deb887;
         }
         
         .rank-default {
-            background: #e9ecef;
-            color: #495057;
+            background: #fff;
+            color: var(--stats-text-muted);
+            border: 1px solid var(--stats-border);
         }
         
         .item-info {
             flex: 1;
+            min-width: 0;
         }
         
         .item-name {
             font-weight: 600;
-            color: #1a1a2e;
-            font-size: 1rem;
+            color: var(--stats-text-dark);
+            font-size: 0.95rem;
         }
         
         .item-count {
-            color: #6c757d;
-            font-size: 0.85rem;
+            color: var(--stats-text-muted);
+            font-size: 0.8rem;
         }
         
         .item-bar {
-            height: 6px;
-            background: #e9ecef;
-            border-radius: 3px;
+            height: 4px;
+            background: var(--stats-border);
+            border-radius: 2px;
             overflow: hidden;
             margin-top: 0.5rem;
         }
         
         .item-bar-fill {
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 3px;
+            background: var(--stats-accent);
+            border-radius: 2px;
             transition: width 0.5s ease;
         }
         
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 2rem;
-            color: #6c757d;
+            padding: 2rem 1rem;
+            color: var(--stats-text-muted);
         }
         
         .empty-state img {
-            width: 64px;
-            height: 64px;
-            opacity: 0.5;
-            margin-bottom: 1rem;
+            width: 56px;
+            height: 56px;
+            opacity: 0.4;
+            margin-bottom: 0.75rem;
+        }
+        
+        .empty-state h3 {
+            color: var(--stats-text-dark);
+            margin-bottom: 0.5rem;
         }
         
         /* Live Indicator */
@@ -326,61 +353,70 @@ $metaKeywords = 'EchoDoc stats, PDF reader statistics, Nigerian language usage, 
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.2);
+            background: #fff;
+            border: 1px solid var(--stats-border);
             padding: 0.5rem 1rem;
             border-radius: 50px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--stats-text-muted);
             margin-bottom: 1rem;
         }
         
         .live-dot {
             width: 8px;
             height: 8px;
-            background: #2ecc71;
+            background: #28a745;
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
+            50% { opacity: 0.6; transform: scale(1.15); }
         }
         
         /* Responsive */
         @media (max-width: 768px) {
+            .stats-hero {
+                padding: 2.5rem 1rem 4rem;
+            }
+            
             .stats-hero h1 {
                 font-size: 1.75rem;
             }
             
             .main-stats {
                 grid-template-columns: 1fr;
+                gap: 1rem;
             }
             
             .stat-card {
-                padding: 1.5rem;
+                padding: 1.25rem;
             }
             
             .stat-value {
-                font-size: 2.25rem;
+                font-size: 2rem;
             }
             
             .stat-icon {
-                width: 48px;
-                height: 48px;
+                width: 44px;
+                height: 44px;
             }
             
             .leaderboards {
                 grid-template-columns: 1fr;
+                gap: 1rem;
             }
             
             .leaderboard-card {
-                padding: 1.5rem;
+                padding: 1.25rem;
             }
         }
         
         @media (max-width: 480px) {
             .stats-hero {
-                padding: 3rem 1rem;
+                padding: 2rem 1rem 3rem;
             }
             
             .stats-hero h1 {
@@ -388,15 +424,19 @@ $metaKeywords = 'EchoDoc stats, PDF reader statistics, Nigerian language usage, 
             }
             
             .stats-container {
-                margin-top: -2rem;
+                margin-top: -1.5rem;
             }
             
             .stat-value {
-                font-size: 2rem;
+                font-size: 1.75rem;
             }
             
             .stat-label {
-                font-size: 0.85rem;
+                font-size: 0.75rem;
+            }
+            
+            .leaderboard-item {
+                padding: 0.75rem;
             }
         }
     </style>
