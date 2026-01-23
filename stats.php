@@ -23,45 +23,62 @@ function getPublicStats() {
     try {
         $stats = [];
         
-        // Total users
+        // Total users - this should always work
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM users");
         $stats['total_users'] = $stmt->fetch()['total'];
         
-        // Total audio plays (all time)
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM user_analytics WHERE event_type IN ('play_audio', 'tts_generate', 'tts')");
-        $stats['total_plays'] = $stmt->fetch()['total'];
+        // Check if user_analytics table has the expected columns
+        $hasEventType = false;
+        try {
+            $checkStmt = $pdo->query("SHOW COLUMNS FROM user_analytics LIKE 'event_type'");
+            $hasEventType = $checkStmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            // Table might not exist or have different structure
+        }
         
-        // Total downloads (all time)
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM user_analytics WHERE event_type IN ('download_mp3', 'download')");
-        $stats['total_downloads'] = $stmt->fetch()['total'];
-        
-        // Top 5 voices (all time)
-        $stmt = $pdo->query("
-            SELECT 
-                JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.voice')) as voice,
-                COUNT(*) as use_count
-            FROM user_analytics
-            WHERE event_type IN ('play_audio', 'tts_generate', 'tts')
-            AND JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.voice')) IS NOT NULL
-            GROUP BY voice
-            ORDER BY use_count DESC
-            LIMIT 5
-        ");
-        $stats['top_voices'] = $stmt->fetchAll();
-        
-        // Top 5 languages (all time)
-        $stmt = $pdo->query("
-            SELECT 
-                JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.target_lang')) as language,
-                COUNT(*) as use_count
-            FROM user_analytics
-            WHERE event_type = 'translate'
-            AND JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.target_lang')) IS NOT NULL
-            GROUP BY language
-            ORDER BY use_count DESC
-            LIMIT 5
-        ");
-        $stats['top_languages'] = $stmt->fetchAll();
+        if ($hasEventType) {
+            // Total audio plays (all time)
+            $stmt = $pdo->query("SELECT COUNT(*) as total FROM user_analytics WHERE event_type IN ('play_audio', 'tts_generate', 'tts')");
+            $stats['total_plays'] = $stmt->fetch()['total'];
+            
+            // Total downloads (all time)
+            $stmt = $pdo->query("SELECT COUNT(*) as total FROM user_analytics WHERE event_type IN ('download_mp3', 'download')");
+            $stats['total_downloads'] = $stmt->fetch()['total'];
+            
+            // Top 5 voices (all time)
+            $stmt = $pdo->query("
+                SELECT 
+                    JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.voice')) as voice,
+                    COUNT(*) as use_count
+                FROM user_analytics
+                WHERE event_type IN ('play_audio', 'tts_generate', 'tts')
+                AND JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.voice')) IS NOT NULL
+                GROUP BY voice
+                ORDER BY use_count DESC
+                LIMIT 5
+            ");
+            $stats['top_voices'] = $stmt->fetchAll();
+            
+            // Top 5 languages (all time)
+            $stmt = $pdo->query("
+                SELECT 
+                    JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.target_lang')) as language,
+                    COUNT(*) as use_count
+                FROM user_analytics
+                WHERE event_type = 'translate'
+                AND JSON_UNQUOTE(JSON_EXTRACT(event_data, '$.target_lang')) IS NOT NULL
+                GROUP BY language
+                ORDER BY use_count DESC
+                LIMIT 5
+            ");
+            $stats['top_languages'] = $stmt->fetchAll();
+        } else {
+            // Fallback: set defaults when analytics table structure is different
+            $stats['total_plays'] = 0;
+            $stats['total_downloads'] = 0;
+            $stats['top_voices'] = [];
+            $stats['top_languages'] = [];
+        }
         
         return $stats;
         
