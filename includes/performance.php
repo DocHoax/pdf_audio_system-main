@@ -5,6 +5,15 @@
  * Include this file early in the <head> section
  */
 ?>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G3G5XMRFWC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G3G5XMRFWC');
+</script>
+
 <!-- DNS Prefetch for external resources -->
 <link rel="dns-prefetch" href="//img.icons8.com">
 <link rel="dns-prefetch" href="//fonts.googleapis.com">
