@@ -482,3 +482,98 @@ function userWantsEmailNotifications($userId) {
         return true;
     }
 }
+
+/**
+ * Send notification to admin when new user signs up
+ */
+function sendNewUserNotification($username, $userEmail, $fullName = '') {
+    $config = getEmailConfig();
+    $adminEmail = env('ADMIN_EMAIL', $config['from_email']);
+    
+    // Don't send if admin email is not configured
+    if (empty($adminEmail) || $adminEmail === 'noreply@echodoc.app') {
+        error_log("[EchoDoc] New user signup notification skipped - ADMIN_EMAIL not configured");
+        return false;
+    }
+    
+    $registrationTime = date('F j, Y \a\t g:i A');
+    $displayName = $fullName ?: $username;
+    
+    $subject = "🎉 New User Signup: $displayName";
+    
+    $bodyHtml = <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:40px 20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);padding:30px;text-align:center;">
+                            <h1 style="color:#ffffff;margin:0;font-size:24px;">🎉 New User Registration</h1>
+                        </td>
+                    </tr>
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding:30px;">
+                            <p style="color:#333;font-size:16px;line-height:1.6;margin-bottom:20px;">
+                                A new user has just signed up for EchoDoc!
+                            </p>
+                            <table width="100%" style="background-color:#f8f9fa;border-radius:10px;padding:5px;">
+                                <tr>
+                                    <td style="padding:15px;border-bottom:1px solid #e9ecef;">
+                                        <strong style="color:#666;">👤 Username:</strong>
+                                        <span style="color:#333;float:right;">{$username}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:15px;border-bottom:1px solid #e9ecef;">
+                                        <strong style="color:#666;">📧 Email:</strong>
+                                        <span style="color:#333;float:right;">{$userEmail}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:15px;border-bottom:1px solid #e9ecef;">
+                                        <strong style="color:#666;">📝 Full Name:</strong>
+                                        <span style="color:#333;float:right;">{$displayName}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:15px;">
+                                        <strong style="color:#666;">🕐 Registered:</strong>
+                                        <span style="color:#333;float:right;">{$registrationTime}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color:#f8f9fa;padding:15px;text-align:center;">
+                            <p style="color:#999;font-size:12px;margin:0;">
+                                This is an automated notification from EchoDoc
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+
+    $bodyText = "New User Signup on EchoDoc\n\n"
+              . "Username: $username\n"
+              . "Email: $userEmail\n"
+              . "Full Name: $displayName\n"
+              . "Registered: $registrationTime\n";
+    
+    return sendEmail($adminEmail, $subject, $bodyHtml, $bodyText, 'Admin');
+}

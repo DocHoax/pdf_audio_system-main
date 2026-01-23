@@ -47,8 +47,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $user->register($username, $email, $password, $fullName);
             
             if ($result['success']) {
-                // Send welcome email
+                // Send welcome email to user
                 sendWelcomeEmail($email, $fullName ?: $username);
+                
+                // Notify admin of new signup
+                sendNewUserNotification($username, $email, $fullName);
                 
                 // Auto-login after registration
                 $loginResult = $user->login($username, $password);
