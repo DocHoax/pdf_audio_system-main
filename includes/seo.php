@@ -22,9 +22,9 @@ if (!defined('APP_URL')) {
 
 // Set defaults
 $siteUrl = rtrim(defined('APP_URL') ? APP_URL : (function_exists('env') ? env('APP_URL', 'http://localhost') : 'http://localhost'), '/');
-$metaTitle = isset($metaTitle) ? $metaTitle : 'EchoDoc - Transform PDF to Audio';
-$metaDescription = isset($metaDescription) ? $metaDescription : 'Transform PDF documents into natural-sounding audio with AI-powered voice synthesis. Support for Nigerian languages including Yoruba, Hausa, and Igbo.';
-$metaKeywords = isset($metaKeywords) ? $metaKeywords : 'PDF to audio, text to speech, TTS, accessibility, reading aid, document reader, Yoruba, Hausa, Igbo, Nigerian languages';
+$metaTitle = isset($metaTitle) ? $metaTitle : 'EchoDoc - Nigerian Language PDF Reader | Yoruba, Hausa, Igbo Text to Speech';
+$metaDescription = isset($metaDescription) ? $metaDescription : 'EchoDoc is the #1 Nigerian language PDF reader. Convert PDF documents to audio in Yoruba, Hausa, and Igbo. Free AI-powered text to speech for accessibility and learning.';
+$metaKeywords = isset($metaKeywords) ? $metaKeywords : 'Nigerian language PDF reader, Yoruba text to speech, Hausa PDF reader, Igbo audio converter, Nigerian TTS, PDF to audio Nigeria, African language accessibility';
 $metaImage = isset($metaImage) ? $metaImage : ($siteUrl . '/assets/images/echodoc-share.png');
 $canonicalPath = isset($canonicalPath) ? $canonicalPath : (isset($_SERVER['REQUEST_URI']) ? strtok($_SERVER['REQUEST_URI'], '?') : '/');
 $canonical = $siteUrl . (strpos($canonicalPath, '/') === 0 ? $canonicalPath : '/' . ltrim($canonicalPath, '/'));

@@ -74,6 +74,12 @@ $metaKeywords = 'about EchoDoc, PDF accessibility, text to speech technology, re
                         car navigation, announcements, response services in telecommunications, and email reading. Furthermore, 
                         people with vision disabilities often cannot view or read PDF files, and this system addresses that challenge.
                     </p>
+                    <p>
+                        <strong>EchoDoc is the first Nigerian language PDF reader</strong> that supports indigenous African languages. 
+                        With support for <strong>Yoruba</strong>, <strong>Hausa</strong>, and <strong>Igbo</strong>, EchoDoc enables 
+                        millions of Nigerians to consume PDF content in their native languages through natural-sounding AI voices 
+                        powered by YarnGPT technology.
+                    </p>
                 </div>
 
                 <!-- Mission & Objectives -->

@@ -174,7 +174,7 @@ function getUploadErrorMessage($errorCode) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php include 'includes/performance.php'; ?>
     <meta name="google-site-verification" content="Hs65gDOL_s4YG9yZLSttXykvcasVtI-YmrziXxL7pWs" />
-    <title>EchoDoc - Transform PDF to Audio</title>
+    <title>EchoDoc - Nigerian Language PDF Reader | Yoruba, Hausa, Igbo Text to Speech</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/48/pdf.png">
     <link rel="stylesheet" href="assets/css/style.css?v=8">
@@ -227,7 +227,7 @@ function getUploadErrorMessage($errorCode) {
     <header class="hero">
         <div class="hero-content">
             <h1><img src="https://img.icons8.com/fluency/96/pdf.png" alt="EchoDoc"> EchoDoc</h1>
-            <p>Transform your PDF and Word documents into natural-sounding audio with AI-powered voice synthesis</p>
+            <p>The #1 Nigerian language PDF reader. Convert documents to audio in <strong>Yoruba</strong>, <strong>Hausa</strong>, and <strong>Igbo</strong> with AI-powered voice synthesis</p>
         </div>
     </header>
 
