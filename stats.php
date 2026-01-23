@@ -4,13 +4,21 @@
  * Shows live statistics about users, voices, and languages
  */
 
+require_once 'env.php';
 require_once 'includes/db_config.php';
 require_once 'config.php';
 
 // Get public stats (no admin required)
+$dbError = '';
+
 function getPublicStats() {
+    global $dbError;
+    
     $pdo = getDbConnection();
-    if (!$pdo) return null;
+    if (!$pdo) {
+        $dbError = 'Database connection failed. Please check your database settings.';
+        return null;
+    }
     
     try {
         $stats = [];
@@ -58,6 +66,7 @@ function getPublicStats() {
         return $stats;
         
     } catch (PDOException $e) {
+        $dbError = 'Database error: ' . $e->getMessage();
         error_log("Public stats error: " . $e->getMessage());
         return null;
     }
@@ -510,7 +519,7 @@ $metaKeywords = 'EchoDoc stats, PDF reader statistics, Nigerian language usage, 
         <div class="empty-state" style="padding: 4rem;">
             <img src="https://img.icons8.com/fluency/96/database.png" alt="Error">
             <h3>Unable to load stats</h3>
-            <p>Please check the database connection and try again.</p>
+            <p><?php echo htmlspecialchars($dbError ?: 'Please check the database connection and try again.'); ?></p>
         </div>
         <?php endif; ?>
     </main>
