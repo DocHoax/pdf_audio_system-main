@@ -38,11 +38,11 @@ $noIndex = isset($noIndex) ? $noIndex : false;
 <?php endif; ?>
 
 <!-- Favicon for Google Search Results -->
-<link rel="icon" type="image/png" sizes="32x32" href="<?php echo $siteUrl; ?>/assets/images/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="<?php echo $siteUrl; ?>/assets/images/favicon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="<?php echo $siteUrl; ?>/assets/images/favicon.png">
-<link rel="shortcut icon" href="<?php echo $siteUrl; ?>/assets/images/favicon.png">
-<meta name="msapplication-TileImage" content="<?php echo $siteUrl; ?>/assets/images/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="<?php echo $siteUrl; ?>/assets/images/icon-48.png">
+<link rel="icon" type="image/png" sizes="16x16" href="<?php echo $siteUrl; ?>/assets/images/icon-48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="<?php echo $siteUrl; ?>/assets/images/icon-192.png">
+<link rel="shortcut icon" href="<?php echo $siteUrl; ?>/assets/images/icon-48.png">
+<meta name="msapplication-TileImage" content="<?php echo $siteUrl; ?>/assets/images/icon-192.png">
 <meta name="theme-color" content="#3d5a80">
 
 <link rel="canonical" href="<?php echo htmlspecialchars($canonical, ENT_QUOTES); ?>" />
