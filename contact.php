@@ -59,6 +59,7 @@ $metaKeywords = 'contact EchoDoc, support, help, feedback, PDF to audio help';
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
     <title><?php echo htmlspecialchars($metaTitle); ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
     <?php include 'includes/seo.php'; ?>
 </head>
 <body>

@@ -146,6 +146,7 @@ $metaTitle = 'My Profile - EchoDoc';
     <title><?php echo htmlspecialchars($metaTitle); ?></title>
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/48/pdf.png">
     <link rel="stylesheet" href="assets/css/style.css?v=8">
+    <link rel="stylesheet" href="assets/css/pages.css">
     <?php include 'includes/seo.php'; ?>
     <link rel="stylesheet" href="assets/css/auth.css?v=1">
     <style>

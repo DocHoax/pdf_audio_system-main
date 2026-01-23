@@ -530,122 +530,89 @@ function getUploadErrorMessage($errorCode) {
     <!-- Hidden text area for speech -->
     <textarea id="hiddenText" style="display: none;"><?php echo htmlspecialchars($extractedText); ?></textarea>
 
-    <!-- Must Read Modal (shows after signup) -->
+    <!-- Redesigned Welcome Modal (shows after signup) -->
     <?php if (isset($_GET['welcome']) && $_GET['welcome'] == '1'): ?>
-    <div class="modal-overlay" id="mustReadModal">
-        <div class="modal-container must-read-modal">
-            <div class="modal-header">
-                <div class="modal-icon">
-                    <img src="https://img.icons8.com/fluency/96/open-book--v1.png" alt="Must Read">
-                </div>
-                <h2>Welcome to EchoDoc!</h2>
-                <p class="modal-subtitle">Please read this important information before you start</p>
+    <div class="welcome-modal-overlay" id="welcomeModal">
+        <div class="welcome-modal">
+            <!-- Confetti Animation -->
+            <div class="confetti-container">
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
             </div>
-            <div class="modal-body">
-                <div class="must-read-section">
-                    <h3><img src="https://img.icons8.com/fluency/48/info.png" alt="Info"> API Limitations</h3>
-                    <ul class="must-read-list">
-                        <li>
-                            <span class="list-icon"><img src="https://img.icons8.com/fluency/48/error--v1.png" alt="Limit"></span>
-                            <div>
-                                <strong>2,000 Character Limit</strong>
-                                <p>Each API call can process a maximum of 2,000 characters. Longer texts are automatically split into chunks.</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="list-icon"><img src="https://img.icons8.com/fluency/48/bar-chart.png" alt="Stats"></span>
-                            <div>
-                                <strong>80 Calls Per Day</strong>
-                                <p>The API allows up to 80 requests per day. Use wisely for longer documents.</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="list-icon"><img src="https://img.icons8.com/fluency/48/link--v1.png" alt="Chunks"></span>
-                            <div>
-                                <strong>Chunked Processing</strong>
-                                <p>Large documents are processed in chunks and the audio is merged automatically for seamless playback.</p>
-                            </div>
-                        </li>
-                    </ul>
+            
+            <!-- Modal Header -->
+            <div class="welcome-header">
+                <div class="welcome-badge">
+                    <img src="https://img.icons8.com/fluency/96/pdf.png" alt="EchoDoc">
+                </div>
+                <h2>🎉 Welcome to EchoDoc!</h2>
+                <p>You're all set! Here's what you need to know</p>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="welcome-body">
+                <!-- Quick Start Guide -->
+                <div class="welcome-feature">
+                    <div class="feature-num">1</div>
+                    <div class="feature-content">
+                        <h4>Upload Your PDF</h4>
+                        <p>Drag & drop or click to upload any PDF document</p>
+                    </div>
+                    <img src="https://img.icons8.com/fluency/48/upload--v1.png" alt="Upload" class="feature-icon">
                 </div>
                 
-                <div class="must-read-section">
-                    <h3><img src="https://img.icons8.com/fluency/48/speed.png" alt="Performance"> Performance Tips</h3>
-                    <ul class="must-read-list">
-                        <li>
-                            <span class="list-icon"><img src="https://img.icons8.com/fluency/48/save--v1.png" alt="Cache"></span>
-                            <div>
-                                <strong>Smart Audio Caching</strong>
-                                <p>Audio is cached using SHA-256 hash (text + voice) for instant playback on repeated content.</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="list-icon"><img src="https://img.icons8.com/fluency/48/flash-on.png" alt="Fast"></span>
-                            <div>
-                                <strong>Faster Playback</strong>
-                                <p>Previously converted text plays instantly from cache without additional API calls.</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="list-icon"><img src="https://img.icons8.com/fluency/48/goal--v1.png" alt="Optimize"></span>
-                            <div>
-                                <strong>Minimize API Calls</strong>
-                                <p>Edit text before converting to reduce unnecessary API usage.</p>
-                            </div>
-                        </li>
-                    </ul>
+                <div class="welcome-feature">
+                    <div class="feature-num">2</div>
+                    <div class="feature-content">
+                        <h4>Choose Your Voice</h4>
+                        <p>Select from 16 AI voices including Yoruba, Hausa & Igbo</p>
+                    </div>
+                    <img src="https://img.icons8.com/fluency/48/microphone--v1.png" alt="Voice" class="feature-icon">
                 </div>
                 
-                <div class="must-read-section">
-                    <h3><img src="https://img.icons8.com/fluency/48/light-on.png" alt="Tips"> Quick Tips</h3>
-                    <ul class="must-read-list tips-list">
-                        <li>
-                            <span class="list-icon"><img src="https://img.icons8.com/fluency/48/edit--v1.png" alt="Edit"></span>
-                            <div>
-                                <strong>Edit Extracted Text</strong>
-                                <p>Click "Edit Text" to correct any extraction errors before converting to audio.</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="list-icon"><img src="https://img.icons8.com/fluency/48/globe--v1.png" alt="Translate"></span>
-                            <div>
-                                <strong>Translation Available</strong>
-                                <p>Translate your text to Yoruba, Hausa, or Igbo before audio conversion.</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="list-icon"><img src="https://img.icons8.com/fluency/48/microphone--v1.png" alt="Voices"></span>
-                            <div>
-                                <strong>16 Voice Options</strong>
-                                <p>Choose from 16 different AI voices with unique styles and tones.</p>
-                            </div>
-                        </li>
-                    </ul>
+                <div class="welcome-feature">
+                    <div class="feature-num">3</div>
+                    <div class="feature-content">
+                        <h4>Listen & Download</h4>
+                        <p>Play audio instantly or download as MP3</p>
+                    </div>
+                    <img src="https://img.icons8.com/fluency/48/headphones--v1.png" alt="Listen" class="feature-icon">
+                </div>
+                
+                <!-- Important Notice -->
+                <div class="welcome-notice">
+                    <img src="https://img.icons8.com/fluency/32/info.png" alt="Info">
+                    <div>
+                        <strong>Free Tier Limits:</strong> 80 API calls/day, 2,000 chars per call. Audio is cached for faster playback!
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-block" onclick="closeMustReadModal()">
-                    <img src="https://img.icons8.com/fluency/48/checkmark--v1.png" alt="OK"> Got it, Let's Start!
+            
+            <!-- Modal Footer -->
+            <div class="welcome-footer">
+                <button type="button" class="welcome-btn" onclick="closeWelcomeModal()">
+                    <img src="https://img.icons8.com/fluency/24/rocket.png" alt="Start">
+                    Start Converting!
                 </button>
             </div>
         </div>
     </div>
     
     <style>
-        .modal-overlay {
+        .welcome-modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 10000;
             padding: 1rem;
-            backdrop-filter: blur(4px);
-            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.4s ease;
         }
         
         @keyframes fadeIn {
@@ -653,207 +620,301 @@ function getUploadErrorMessage($errorCode) {
             to { opacity: 1; }
         }
         
-        .modal-container {
+        .welcome-modal {
             background: #fff;
-            border-radius: 20px;
-            max-width: 600px;
+            border-radius: 24px;
+            max-width: 480px;
             width: 100%;
-            max-height: 85vh;
             overflow: hidden;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.4s ease;
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.4);
+            animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
         }
         
-        @keyframes slideUp {
+        @keyframes modalPop {
             from { 
                 opacity: 0;
-                transform: translateY(30px);
+                transform: scale(0.9) translateY(20px);
             }
             to { 
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1) translateY(0);
             }
         }
         
-        .must-read-modal .modal-header {
-            background: linear-gradient(135deg, #3d5a80, #98c1d9);
-            color: white;
-            padding: 2rem;
+        /* Confetti Animation */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(45deg, #f39c12, #e74c3c, #9b59b6, #3498db, #2ecc71);
+            animation: confettiFall 3s ease-in-out infinite;
+        }
+        
+        .confetti:nth-child(1) { left: 10%; animation-delay: 0s; background: #f39c12; }
+        .confetti:nth-child(2) { left: 30%; animation-delay: 0.3s; background: #e74c3c; }
+        .confetti:nth-child(3) { left: 50%; animation-delay: 0.6s; background: #9b59b6; }
+        .confetti:nth-child(4) { left: 70%; animation-delay: 0.9s; background: #3498db; }
+        .confetti:nth-child(5) { left: 90%; animation-delay: 1.2s; background: #2ecc71; }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(150px) rotate(360deg); opacity: 0; }
+        }
+        
+        /* Header */
+        .welcome-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2.5rem 2rem 2rem;
             text-align: center;
+            position: relative;
         }
         
-        .modal-header .modal-icon img {
-            width: 64px;
-            height: 64px;
-            margin-bottom: 1rem;
+        .welcome-badge {
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
         
-        .modal-header h2 {
+        .welcome-badge img {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .welcome-header h2 {
+            color: #fff;
             font-size: 1.75rem;
-            margin: 0 0 0.5rem 0;
+            margin: 0 0 0.5rem;
             font-weight: 700;
         }
         
-        .modal-subtitle {
-            opacity: 0.9;
+        .welcome-header p {
+            color: rgba(255, 255, 255, 0.9);
             font-size: 1rem;
             margin: 0;
         }
         
-        .modal-body {
+        /* Body */
+        .welcome-body {
             padding: 1.5rem;
-            max-height: 45vh;
-            overflow-y: auto;
         }
         
-        .must-read-section {
-            margin-bottom: 1.5rem;
-        }
-        
-        .must-read-section:last-child {
-            margin-bottom: 0;
-        }
-        
-        .must-read-section h3 {
+        .welcome-feature {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 1.1rem;
-            color: #343a40;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .must-read-section h3 img {
-            width: 24px;
-            height: 24px;
-        }
-        
-        .must-read-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .must-read-list li {
-            display: flex;
-            gap: 0.75rem;
-            padding: 0.75rem;
+            gap: 1rem;
+            padding: 1rem;
             background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 0.5rem;
-            transition: all 0.2s ease;
+            border-radius: 16px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
         }
         
-        .must-read-list li:hover {
+        .welcome-feature:hover {
             background: #e9ecef;
+            transform: translateX(4px);
         }
         
-        .must-read-list li:last-child {
-            margin-bottom: 0;
-        }
-        
-        .list-icon {
-            flex-shrink: 0;
+        .feature-num {
             width: 32px;
             height: 32px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
         }
         
-        .list-icon img {
-            width: 28px;
-            height: 28px;
+        .feature-content {
+            flex: 1;
         }
         
-        .must-read-list li strong {
-            display: block;
-            color: #343a40;
-            font-size: 0.95rem;
-            margin-bottom: 0.25rem;
+        .feature-content h4 {
+            color: #1a1a2e;
+            font-size: 1rem;
+            margin: 0 0 0.25rem;
+            font-weight: 600;
         }
         
-        .must-read-list li p {
+        .feature-content p {
             color: #6c757d;
             font-size: 0.85rem;
             margin: 0;
             line-height: 1.4;
         }
         
-        .modal-footer {
+        .feature-icon {
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+        }
+        
+        .welcome-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+            border-radius: 12px;
+            margin-top: 1rem;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .welcome-notice img {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .welcome-notice div {
+            font-size: 0.85rem;
+            color: #856404;
+            line-height: 1.5;
+        }
+        
+        .welcome-notice strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        /* Footer */
+        .welcome-footer {
             padding: 1.25rem 1.5rem;
             background: #f8f9fa;
-            border-top: 1px solid #e9ecef;
         }
         
-        .modal-footer .btn {
-            padding: 0.875rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
+        .welcome-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
-        .modal-footer .btn img {
-            width: 20px;
-            height: 20px;
+        .welcome-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
         
-        @media (max-width: 576px) {
-            .modal-container {
+        .welcome-btn img {
+            width: 24px;
+            height: 24px;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            .welcome-modal {
+                border-radius: 20px;
                 max-height: 90vh;
-                border-radius: 16px;
+                overflow-y: auto;
             }
             
-            .modal-header {
-                padding: 1.5rem;
+            .welcome-header {
+                padding: 2rem 1.5rem 1.5rem;
             }
             
-            .modal-header h2 {
+            .welcome-header h2 {
                 font-size: 1.4rem;
             }
             
-            .modal-body {
-                padding: 1rem;
-                max-height: 50vh;
+            .welcome-badge {
+                width: 64px;
+                height: 64px;
             }
             
-            .must-read-list li {
-                padding: 0.625rem;
+            .welcome-badge img {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .welcome-body {
+                padding: 1rem;
+            }
+            
+            .welcome-feature {
+                padding: 0.875rem;
+            }
+            
+            .feature-num {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
+            
+            .feature-content h4 {
+                font-size: 0.95rem;
+            }
+            
+            .feature-content p {
+                font-size: 0.8rem;
+            }
+            
+            .feature-icon {
+                width: 28px;
+                height: 28px;
+            }
+            
+            .welcome-notice {
+                padding: 0.875rem;
+            }
+            
+            .welcome-btn {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
             }
         }
     </style>
     
     <script>
-        function closeMustReadModal() {
-            const modal = document.getElementById('mustReadModal');
-            modal.style.animation = 'fadeOut 0.3s ease forwards';
+        function closeWelcomeModal() {
+            const modal = document.getElementById('welcomeModal');
+            modal.style.animation = 'fadeIn 0.3s ease reverse forwards';
             setTimeout(() => {
                 modal.remove();
                 // Remove ?welcome=1 from URL without refresh
                 const url = new URL(window.location);
                 url.searchParams.delete('welcome');
                 window.history.replaceState({}, '', url);
-            }, 300);
+            }, 280);
         }
         
         // Close modal on Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                const modal = document.getElementById('mustReadModal');
-                if (modal) closeMustReadModal();
+                const modal = document.getElementById('welcomeModal');
+                if (modal) closeWelcomeModal();
             }
         });
-        
-        // Add fadeOut animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeOut {
-                from { opacity: 1; }
-                to { opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
     <?php endif; ?>
 
