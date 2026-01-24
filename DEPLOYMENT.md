@@ -92,14 +92,52 @@ Click **"Create Resources"** and Digital Ocean will:
 - Deploy to production
 - Provide a URL like: `https://echodoc-pdf-audio-xxxxx.ondigitalocean.app`
 
-### 7. Post-Deployment Checks
+### 7. Pre-Deployment Checklist
 
+**Database Setup:**
+- [ ] Run `database/setup.sql` to create core tables
+- [ ] Run `database/stats_migration.sql` to enable analytics tracking
+- [ ] Run `database/analytics_email.sql` for email queue (if using)
+
+**Local Testing:**
+- [ ] Test PWA install popup on mobile device
+- [ ] Test responsive design on phone/tablet
+- [ ] Verify all pages load correctly
+- [ ] Test PDF upload and audio conversion
+- [ ] Test user registration and login
+
+**Configuration:**
+- [ ] Update `APP_URL` in `.env` for production domain
+- [ ] Update `GOOGLE_REDIRECT_URI` for production
+- [ ] Set `APP_ENV=production`
+- [ ] Configure `ADMIN_EMAIL` for signup notifications
+
+### 8. Post-Deployment Checks
+
+**Functionality:**
 - [ ] Test file upload functionality
 - [ ] Test PDF to audio conversion
 - [ ] Test Google OAuth login
 - [ ] Test MP3 download feature
 - [ ] Check database connection
 - [ ] Monitor logs for errors
+
+**PWA & SEO (Requires HTTPS):**
+- [ ] Verify service worker registers (check DevTools → Application)
+- [ ] Test PWA install prompt on mobile Chrome
+- [ ] Test offline page (`/offline.html`)
+- [ ] Verify Google Analytics is tracking (GA Real-time report)
+- [ ] Submit sitemap to Google Search Console:
+  1. Go to https://search.google.com/search-console
+  2. Add your domain property
+  3. Submit: `https://yourdomain.com/sitemap.php`
+  4. Request indexing for key pages
+
+**Mobile Testing Tips:**
+- Use Chrome DevTools device emulation for quick tests
+- Test on actual iOS Safari (different behavior than Chrome)
+- Check touch targets are at least 44x44px
+- Verify text is readable without zooming
 
 ## Updating Your App
 
