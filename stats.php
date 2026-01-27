@@ -27,13 +27,13 @@ function getPublicStats() {
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM users");
         $stats['total_users'] = $stmt->fetch()['total'];
         
-        // Check if user_analytics table has the expected columns
+        // Check if user_analytics table has the expected columns by trying a query
         $hasEventType = false;
         try {
-            $checkStmt = $pdo->query("SHOW COLUMNS FROM user_analytics LIKE 'event_type'");
-            $hasEventType = ($checkStmt->fetch() !== false);
+            $pdo->query("SELECT event_type FROM user_analytics LIMIT 1");
+            $hasEventType = true;
         } catch (PDOException $e) {
-            // Table might not exist or have different structure
+            // Table or column doesn't exist
         }
         
         if ($hasEventType) {
