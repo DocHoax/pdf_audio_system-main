@@ -31,7 +31,7 @@ function getPublicStats() {
         $hasEventType = false;
         try {
             $checkStmt = $pdo->query("SHOW COLUMNS FROM user_analytics LIKE 'event_type'");
-            $hasEventType = $checkStmt->rowCount() > 0;
+            $hasEventType = ($checkStmt->fetch() !== false);
         } catch (PDOException $e) {
             // Table might not exist or have different structure
         }
