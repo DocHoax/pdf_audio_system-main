@@ -80,6 +80,9 @@ function getPublicStats() {
             $stats['top_languages'] = [];
         }
         
+        // Include flag for debugging
+        $stats['analytics_enabled'] = $hasEventType;
+        
         return $stats;
         
     } catch (PDOException $e) {
@@ -475,6 +478,12 @@ $metaKeywords = 'EchoDoc stats, PDF reader statistics, Nigerian language usage, 
     <main class="stats-container">
         <?php if ($stats): ?>
         
+        <?php if (isset($stats['analytics_enabled']) && !$stats['analytics_enabled']): ?>
+        <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem; text-align: center;">
+            <strong>⚠️ Analytics tracking not enabled.</strong><br>
+            <small>Run <code>database/stats_migration.sql</code> in phpMyAdmin to enable audio & download tracking.</small>
+        </div>
+        <?php endif; ?>
         <!-- Main Stats Cards -->
         <div class="main-stats">
             <div class="stat-card">

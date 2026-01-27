@@ -919,7 +919,7 @@ function getUploadErrorMessage($errorCode) {
     <?php endif; ?>
 
     <!-- JavaScript -->
-    <script src="assets/js/analytics.js?v=1" defer></script>
+    <script src="assets/js/analytics.js?v=2"></script>
     <script src="assets/js/speech.js?v=14"></script>
     <script src="assets/js/main.js?v=15" defer></script>
 </body>
