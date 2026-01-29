@@ -33,13 +33,21 @@ function getPublicStats() {
         try {
             // Debug: check which database we're connected to
             $dbCheck = $pdo->query("SELECT DATABASE()")->fetchColumn();
-            $debugError = "Connected to: " . $dbCheck . " | ";
+            $debugError = "DB: " . $dbCheck . " | ";
             
-            $pdo->query("SELECT event_type FROM user_analytics LIMIT 1");
-            $hasEventType = true;
-            $debugError = ''; // Clear if successful
+            // Debug: check table structure
+            $colsQuery = $pdo->query("SHOW COLUMNS FROM user_analytics");
+            $cols = $colsQuery->fetchAll(PDO::FETCH_COLUMN);
+            $debugError .= "Columns: " . implode(", ", $cols) . " | ";
+            
+            if (in_array('event_type', $cols)) {
+                $hasEventType = true;
+                $debugError = ''; // Clear if successful
+            } else {
+                $debugError .= "event_type not in list!";
+            }
         } catch (PDOException $e) {
-            $debugError .= $e->getMessage();
+            $debugError .= "Error: " . $e->getMessage();
         }
         
         if ($hasEventType) {
