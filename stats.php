@@ -29,11 +29,12 @@ function getPublicStats() {
         
         // Check if user_analytics table has the expected columns by trying a query
         $hasEventType = false;
+        $debugError = '';
         try {
             $pdo->query("SELECT event_type FROM user_analytics LIMIT 1");
             $hasEventType = true;
         } catch (PDOException $e) {
-            // Table or column doesn't exist
+            $debugError = $e->getMessage();
         }
         
         if ($hasEventType) {
@@ -82,6 +83,7 @@ function getPublicStats() {
         
         // Include flag for debugging
         $stats['analytics_enabled'] = $hasEventType;
+        $stats['debug_error'] = $debugError;
         
         return $stats;
         
@@ -482,6 +484,9 @@ $metaKeywords = 'EchoDoc stats, PDF reader statistics, Nigerian language usage, 
         <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem; text-align: center;">
             <strong>⚠️ Analytics tracking not enabled.</strong><br>
             <small>Run <code>database/stats_migration.sql</code> in phpMyAdmin to enable audio & download tracking.</small>
+            <?php if (!empty($stats['debug_error'])): ?>
+            <br><small style="color:#666;">Debug: <?php echo htmlspecialchars($stats['debug_error']); ?></small>
+            <?php endif; ?>
         </div>
         <?php endif; ?>
         <!-- Main Stats Cards -->
