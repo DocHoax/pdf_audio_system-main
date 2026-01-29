@@ -31,10 +31,15 @@ function getPublicStats() {
         $hasEventType = false;
         $debugError = '';
         try {
+            // Debug: check which database we're connected to
+            $dbCheck = $pdo->query("SELECT DATABASE()")->fetchColumn();
+            $debugError = "Connected to: " . $dbCheck . " | ";
+            
             $pdo->query("SELECT event_type FROM user_analytics LIMIT 1");
             $hasEventType = true;
+            $debugError = ''; // Clear if successful
         } catch (PDOException $e) {
-            $debugError = $e->getMessage();
+            $debugError .= $e->getMessage();
         }
         
         if ($hasEventType) {
