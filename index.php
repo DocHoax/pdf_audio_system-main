@@ -922,5 +922,7 @@ function getUploadErrorMessage($errorCode) {
     <script src="assets/js/analytics.js?v=2"></script>
     <script src="assets/js/speech.js?v=14"></script>
     <script src="assets/js/main.js?v=15" defer></script>
+    <!-- 100% privacy-first analytics -->
+    <script data-collect-dnt="true" async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

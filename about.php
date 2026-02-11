@@ -267,5 +267,7 @@ $metaKeywords = 'about EchoDoc, PDF accessibility, text to speech technology, re
     <!-- JavaScript -->
     <script src="assets/js/analytics.js?v=1"></script>
     <script src="assets/js/main.js"></script>
+    <!-- 100% privacy-first analytics -->
+    <script data-collect-dnt="true" async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>
