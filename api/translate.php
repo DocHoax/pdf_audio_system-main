@@ -4,6 +4,8 @@
  * Translates text to Nigerian local languages using Google Translate API (free tier)
  */
 
+require_once __DIR__ . '/../includes/security_headers.php';
+
 // Prevent direct access
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -129,7 +131,8 @@ function translateChunk($text, $targetLang) {
         CURLOPT_URL => $fullUrl,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT => 30,
-        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
         CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
     ]);
     

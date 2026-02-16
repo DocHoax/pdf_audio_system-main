@@ -7,6 +7,12 @@ header('Content-Type: text/html');
 
 require_once __DIR__ . '/../config.php';
 
+if (env('APP_ENV', 'local') === 'production') {
+    http_response_code(404);
+    echo 'Not Found';
+    exit;
+}
+
 echo "<h2>YarnGPT API Test</h2>";
 
 // Check if cURL is enabled
@@ -21,7 +27,8 @@ $testUrl = 'https://www.google.com';
 $ch = curl_init($testUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 $testResult = curl_exec($ch);
 $testError = curl_error($ch);
 curl_close($ch);
@@ -57,8 +64,8 @@ curl_setopt_array($ch, [
     ],
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT => 30,
-    CURLOPT_SSL_VERIFYPEER => false,
-    CURLOPT_SSL_VERIFYHOST => false,
+    CURLOPT_SSL_VERIFYPEER => true,
+    CURLOPT_SSL_VERIFYHOST => 2,
     CURLOPT_FOLLOWLOCATION => true
 ]);
 

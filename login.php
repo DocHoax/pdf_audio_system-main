@@ -14,6 +14,56 @@ redirectIfLoggedIn();
 $message = '';
 $messageType = '';
 
+/**
+ * Validate and normalize redirect target to prevent open redirects.
+ */
+function sanitizeRedirectPath($redirect, $default = 'index.php') {
+    if (!is_string($redirect)) {
+        return $default;
+    }
+
+    $redirect = trim($redirect);
+    if ($redirect === '') {
+        return $default;
+    }
+
+    if (strpos($redirect, "\r") !== false || strpos($redirect, "\n") !== false) {
+        return $default;
+    }
+
+    $parsed = parse_url($redirect);
+    if ($parsed === false) {
+        return $default;
+    }
+
+    if (isset($parsed['scheme']) || isset($parsed['host']) || isset($parsed['user']) || isset($parsed['pass'])) {
+        return $default;
+    }
+
+    $path = $parsed['path'] ?? '';
+    if ($path === '' || str_starts_with($path, '//') || strpos($path, '..') !== false) {
+        return $default;
+    }
+
+    if (!preg_match('/^[a-zA-Z0-9_\-\/\.]+$/', $path)) {
+        return $default;
+    }
+
+    $query = $parsed['query'] ?? '';
+    if ($query !== '' && !preg_match('/^[a-zA-Z0-9_\-=&%\.]+$/', $query)) {
+        return $default;
+    }
+
+    $normalizedPath = ltrim($path, '/');
+    if ($normalizedPath === '') {
+        $normalizedPath = $default;
+    }
+
+    return $query !== '' ? $normalizedPath . '?' . $query : $normalizedPath;
+}
+
+$redirectFromGet = isset($_GET['redirect']) ? sanitizeRedirectPath($_GET['redirect'], '') : '';
+
 // Check for registration success
 if (isset($_GET['registered'])) {
     $message = 'Registration successful! Please login.';
@@ -53,11 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setUserSession($result['user']);
             
             // Handle redirect
-            $redirect = $_GET['redirect'] ?? $_POST['redirect'] ?? 'index.php';
-            // Sanitize redirect URL
-            if (!preg_match('/^[a-zA-Z0-9_\-\.\/\?=&]+$/', $redirect)) {
-                $redirect = 'index.php';
-            }
+            $redirect = sanitizeRedirectPath($_GET['redirect'] ?? $_POST['redirect'] ?? 'index.php');
             
             header('Location: ' . $redirect);
             exit;
@@ -127,10 +173,10 @@ $metaKeywords = 'EchoDoc login, sign in, PDF to audio account';
                 </div>
                 <?php endif; ?>
 
-                <form method="POST" action="login.php<?php echo isset($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : ''; ?>" class="auth-form">
+                <form method="POST" action="login.php<?php echo $redirectFromGet !== '' ? '?redirect=' . urlencode($redirectFromGet) : ''; ?>" class="auth-form">
                     <?php echo csrfField(); ?>
-                    <?php if (isset($_GET['redirect'])): ?>
-                    <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($_GET['redirect']); ?>">
+                    <?php if ($redirectFromGet !== ''): ?>
+                    <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($redirectFromGet); ?>">
                     <?php endif; ?>
                     
                     <div class="form-group">

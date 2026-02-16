@@ -7,6 +7,7 @@
 
 // Load environment variables from .env file
 require_once __DIR__ . '/env.php';
+require_once __DIR__ . '/includes/security_headers.php';
 
 // Error reporting (disabled for production)
 $isProduction = env('APP_ENV') === 'production';

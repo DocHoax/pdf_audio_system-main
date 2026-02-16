@@ -14,21 +14,27 @@ if (!isset($_SESSION[$recentKey])) {
     $_SESSION[$recentKey] = [];
 }
 
-// Handle file deletion from recent list
-if (isset($_POST['remove_file']) && isset($_POST['file_index'])) {
-    $index = (int)$_POST['file_index'];
-    if (isset($_SESSION[$recentKey][$index])) {
-        array_splice($_SESSION[$recentKey], $index, 1);
+// Handle POST actions with CSRF protection
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        http_response_code(400);
+        exit('Invalid request. Please refresh and try again.');
     }
-    header('Location: recent.php');
-    exit;
-}
 
-// Handle clear all
-if (isset($_POST['clear_all'])) {
-    $_SESSION[$recentKey] = [];
-    header('Location: recent.php');
-    exit;
+    if (isset($_POST['remove_file']) && isset($_POST['file_index'])) {
+        $index = (int)$_POST['file_index'];
+        if (isset($_SESSION[$recentKey][$index])) {
+            array_splice($_SESSION[$recentKey], $index, 1);
+        }
+        header('Location: recent.php');
+        exit;
+    }
+
+    if (isset($_POST['clear_all'])) {
+        $_SESSION[$recentKey] = [];
+        header('Location: recent.php');
+        exit;
+    }
 }
 
 $recentFiles = $_SESSION[$recentKey] ?? [];
@@ -281,6 +287,7 @@ $metaTitle = 'Recent Files - EchoDoc';
                         <?php echo count($recentFiles); ?> recent file<?php echo count($recentFiles) !== 1 ? 's' : ''; ?>
                     </span>
                     <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to clear all recent files?');">
+                        <?php echo csrfField(); ?>
                         <button type="submit" name="clear_all" class="btn-clear-all">
                             <img src="https://img.icons8.com/fluency/48/trash--v1.png" alt="Clear"> Clear All
                         </button>
@@ -324,6 +331,7 @@ $metaTitle = 'Recent Files - EchoDoc';
                             </a>
                             <?php endif; ?>
                             <form method="POST" style="display: inline;">
+                                <?php echo csrfField(); ?>
                                 <input type="hidden" name="file_index" value="<?php echo $index; ?>">
                                 <button type="submit" name="remove_file" class="btn-remove">
                                     <img src="https://img.icons8.com/fluency/48/trash--v1.png" alt="Remove">

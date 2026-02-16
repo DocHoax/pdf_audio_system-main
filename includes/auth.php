@@ -5,6 +5,8 @@
  * Session management and authentication functions
  */
 
+require_once __DIR__ . '/security_headers.php';
+
 // Configure session settings before starting
 if (session_status() === PHP_SESSION_NONE) {
     // Set session cookie parameters for better mobile compatibility
