@@ -113,6 +113,7 @@ function initFileUpload() {
     const fileInfo = document.getElementById('fileInfo');
     const uploadBtn = document.getElementById('uploadBtn');
     const uploadForm = document.getElementById('uploadForm');
+    let fileInfoTimeout = null;
 
     if (!dropZone || !fileInput) return;
 
@@ -196,13 +197,15 @@ function initFileUpload() {
         if (!fileInfo) return;
 
         fileInfo.textContent = message;
-        fileInfo.className = 'file-info show';
-        
-        if (type === 'error') {
-            fileInfo.style.background = '#ef4444';
-        } else {
-            fileInfo.style.background = '#2563eb';
+        fileInfo.className = `file-info ${type === 'error' ? 'error' : 'success'} show`;
+
+        if (fileInfoTimeout) {
+            clearTimeout(fileInfoTimeout);
         }
+
+        fileInfoTimeout = setTimeout(() => {
+            fileInfo.classList.remove('show');
+        }, type === 'error' ? 6000 : 4500);
     }
 
     function formatFileSize(bytes) {
