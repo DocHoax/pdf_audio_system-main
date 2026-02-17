@@ -460,6 +460,26 @@ $metaKeywords = 'EchoDoc stats, PDF reader statistics, Nigerian language usage, 
             .leaderboard-item {
                 padding: 0.75rem;
             }
+
+            .item-name,
+            .item-count {
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .stats-hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .stats-hero p {
+                font-size: 0.9rem;
+            }
+
+            .leaderboard-header h2 {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>

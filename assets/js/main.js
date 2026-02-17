@@ -44,16 +44,31 @@ function initNavigation() {
     const navMenu = document.querySelector('.nav-menu');
 
     if (navToggle && navMenu) {
+        const navIcon = navToggle.querySelector('img');
+
+        const closeMenu = () => {
+            navMenu.classList.remove('active');
+            document.body.classList.remove('nav-open');
+            navToggle.setAttribute('aria-expanded', 'false');
+            if (navIcon) {
+                navIcon.src = 'https://img.icons8.com/fluency/48/menu.png';
+            }
+        };
+
+        navToggle.setAttribute('aria-expanded', 'false');
+
         navToggle.addEventListener('click', function() {
             navMenu.classList.toggle('active');
+            const isOpen = navMenu.classList.contains('active');
+            document.body.classList.toggle('nav-open', isOpen);
+            navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
             
             // Toggle icon
-            const icon = navToggle.querySelector('img');
-            if (icon) {
-                if (navMenu.classList.contains('active')) {
-                    icon.src = 'https://img.icons8.com/fluency/48/close-window.png';
+            if (navIcon) {
+                if (isOpen) {
+                    navIcon.src = 'https://img.icons8.com/fluency/48/close-window.png';
                 } else {
-                    icon.src = 'https://img.icons8.com/fluency/48/menu.png';
+                    navIcon.src = 'https://img.icons8.com/fluency/48/menu.png';
                 }
             }
         });
@@ -62,22 +77,28 @@ function initNavigation() {
         const navLinks = navMenu.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
-                navMenu.classList.remove('active');
-                const icon = navToggle.querySelector('img');
-                if (icon) {
-                    icon.src = 'https://img.icons8.com/fluency/48/menu.png';
-                }
+                closeMenu();
             });
         });
 
         // Close menu when clicking outside
         document.addEventListener('click', function(e) {
             if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navMenu.classList.remove('active');
-                const icon = navToggle.querySelector('img');
-                if (icon) {
-                    icon.src = 'https://img.icons8.com/fluency/48/menu.png';
-                }
+                closeMenu();
+            }
+        });
+
+        // Close menu with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+                closeMenu();
+            }
+        });
+
+        // Reset menu when leaving mobile viewport
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && navMenu.classList.contains('active')) {
+                closeMenu();
             }
         });
     }

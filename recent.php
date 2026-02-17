@@ -236,6 +236,71 @@ $metaTitle = 'Recent Files - EchoDoc';
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+
+        @media (max-width: 768px) {
+            .recent-file-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+
+            .file-actions {
+                width: 100%;
+                justify-content: flex-end;
+                flex-wrap: wrap;
+            }
+
+            .file-actions button,
+            .file-actions a {
+                min-height: 42px;
+            }
+
+            .file-meta {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .recent-files-container {
+                max-width: 100%;
+            }
+
+            .header-actions {
+                align-items: stretch;
+            }
+
+            .btn-clear-all,
+            .header-actions form {
+                width: 100%;
+            }
+
+            .btn-clear-all {
+                justify-content: center;
+            }
+
+            .file-name {
+                font-size: 1.05rem;
+                white-space: normal;
+            }
+
+            .file-actions {
+                width: 100%;
+                justify-content: stretch;
+                gap: 0.375rem;
+            }
+
+            .file-actions button,
+            .file-actions a {
+                flex: 1;
+                justify-content: center;
+                padding: 0.625rem;
+            }
+
+            .empty-state {
+                padding: 2rem 1rem;
+            }
+        }
     </style>
 </head>
 <body>

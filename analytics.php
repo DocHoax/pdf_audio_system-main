@@ -166,10 +166,67 @@ $metaTitle = 'Analytics Dashboard - EchoDoc';
             .grid-3 {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .analytics-container {
+                padding: 16px;
+            }
         }
         @media (max-width: 768px) {
+            .analytics-container {
+                padding: 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 14px;
+            }
+
+            .stat-card .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .chart-container {
+                padding: 14px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .data-table {
+                min-width: 640px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
             .grid-2, .grid-3 {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .period-btn {
+                padding: 7px 10px;
+                font-size: 0.82rem;
+            }
+
+            .chart-title {
+                font-size: 1rem;
+                word-break: break-word;
+            }
+
+            .section-header h2 {
+                font-size: 1.1rem;
             }
         }
         .voice-badge {

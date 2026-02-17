@@ -302,6 +302,72 @@ $metaTitle = 'My Profile - EchoDoc';
         .avatar-form .btn {
             align-self: flex-start;
         }
+
+        @media (max-width: 768px) {
+            .profile-main {
+                padding: 1rem;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.25rem;
+                gap: 1rem;
+            }
+
+            .profile-avatar {
+                width: 84px;
+                height: 84px;
+            }
+
+            .profile-info h1 {
+                font-size: 1.4rem;
+            }
+
+            .profile-section {
+                padding: 1rem;
+            }
+
+            .avatar-upload-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .avatar-upload-info,
+            .avatar-upload-label,
+            .avatar-form .btn {
+                width: 100%;
+            }
+
+            .avatar-upload-label,
+            .avatar-form .btn {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-main {
+                padding: 0.75rem;
+            }
+
+            .profile-header {
+                border-radius: 14px;
+            }
+
+            .profile-info h1 {
+                font-size: 1.2rem;
+                word-break: break-word;
+            }
+
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
