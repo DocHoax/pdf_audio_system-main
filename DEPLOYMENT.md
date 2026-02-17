@@ -48,12 +48,9 @@ DB_PORT=${db.PORT}
 
 # API Keys (add manually)
 YARNGPT_API_KEY=your_actual_yarngpt_api_key
-GOOGLE_CLIENT_ID=your_actual_google_client_id
-GOOGLE_CLIENT_SECRET=your_actual_google_client_secret
 
 # App Config
 APP_ENV=production
-GOOGLE_REDIRECT_URI=https://your-app-name.ondigitalocean.app/google-callback.php
 ```
 
 ### 4. Initialize Database
@@ -74,16 +71,7 @@ After deployment, you need to import the database schema.
 mysql -h <hostname> -u <username> -p<password> -P <port> echodoc_db < database/setup.sql
 ```
 
-### 5. Update Google OAuth Redirect URI
-
-1. Go to https://console.cloud.google.com/
-2. Navigate to your OAuth credentials
-3. Add authorized redirect URI:
-   ```
-   https://your-app-name.ondigitalocean.app/google-callback.php
-   ```
-
-### 6. Deploy
+### 5. Deploy
 
 Click **"Create Resources"** and Digital Ocean will:
 
@@ -92,14 +80,16 @@ Click **"Create Resources"** and Digital Ocean will:
 - Deploy to production
 - Provide a URL like: `https://echodoc-pdf-audio-xxxxx.ondigitalocean.app`
 
-### 7. Pre-Deployment Checklist
+### 6. Pre-Deployment Checklist
 
 **Database Setup:**
+
 - [ ] Run `database/setup.sql` to create core tables
 - [ ] Run `database/stats_migration.sql` to enable analytics tracking
 - [ ] Run `database/analytics_email.sql` for email queue (if using)
 
 **Local Testing:**
+
 - [ ] Test PWA install popup on mobile device
 - [ ] Test responsive design on phone/tablet
 - [ ] Verify all pages load correctly
@@ -107,22 +97,23 @@ Click **"Create Resources"** and Digital Ocean will:
 - [ ] Test user registration and login
 
 **Configuration:**
+
 - [ ] Update `APP_URL` in `.env` for production domain
-- [ ] Update `GOOGLE_REDIRECT_URI` for production
 - [ ] Set `APP_ENV=production`
 - [ ] Configure `ADMIN_EMAIL` for signup notifications
 
-### 8. Post-Deployment Checks
+### 7. Post-Deployment Checks
 
 **Functionality:**
+
 - [ ] Test file upload functionality
 - [ ] Test PDF to audio conversion
-- [ ] Test Google OAuth login
 - [ ] Test MP3 download feature
 - [ ] Check database connection
 - [ ] Monitor logs for errors
 
 **PWA & SEO (Requires HTTPS):**
+
 - [ ] Verify service worker registers (check DevTools → Application)
 - [ ] Test PWA install prompt on mobile Chrome
 - [ ] Test offline page (`/offline.html`)
@@ -134,6 +125,7 @@ Click **"Create Resources"** and Digital Ocean will:
   4. Request indexing for key pages
 
 **Mobile Testing Tips:**
+
 - Use Chrome DevTools device emulation for quick tests
 - Test on actual iOS Safari (different behavior than Chrome)
 - Check touch targets are at least 44x44px
@@ -171,12 +163,6 @@ Digital Ocean will automatically redeploy (if `deploy_on_push: true`).
 - Increase upload size limits in PHP settings
 - Check disk space
 - Verify `uploads/` directory permissions
-
-**Issue: Google OAuth fails**
-
-- Update redirect URI in Google Console
-- Check `GOOGLE_REDIRECT_URI` environment variable
-- Verify client ID and secret are correct
 
 ## Alternative: Use Droplet (~$6/month)
 

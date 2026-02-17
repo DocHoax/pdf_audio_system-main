@@ -1,99 +1,23 @@
 <?php
+/**
+ * Google OAuth integration has been removed from EchoDoc.
+ * This file is kept as a compatibility stub for legacy includes.
+ */
 
-// Load environment if not already loaded
-if (!function_exists('env')) {
-    require_once __DIR__ . '/../env.php';
+if (!function_exists('getGoogleAuthUrl')) {
+    function getGoogleAuthUrl() {
+        throw new RuntimeException('Google OAuth is disabled.');
+    }
 }
 
-// Google OAuth Credentials from .env
-define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID', ''));
-define('GOOGLE_CLIENT_SECRET', env('GOOGLE_CLIENT_SECRET', ''));
-define('GOOGLE_REDIRECT_URI', env('GOOGLE_REDIRECT_URI', 'http://localhost/pdf_audio_system-main/google-callback.php'));
-
-// Google OAuth URLs
-define('GOOGLE_AUTH_URL', 'https://accounts.google.com/o/oauth2/v2/auth');
-define('GOOGLE_TOKEN_URL', 'https://oauth2.googleapis.com/token');
-define('GOOGLE_USER_INFO_URL', 'https://www.googleapis.com/oauth2/v2/userinfo');
-
-/**
- * Generate Google OAuth URL
- * @return string
- */
-function getGoogleAuthUrl() {
-    $params = [
-        'client_id' => GOOGLE_CLIENT_ID,
-        'redirect_uri' => GOOGLE_REDIRECT_URI,
-        'response_type' => 'code',
-        'scope' => 'email profile',
-        'access_type' => 'online',
-        'prompt' => 'select_account'
-    ];
-    
-    return GOOGLE_AUTH_URL . '?' . http_build_query($params);
+if (!function_exists('getGoogleAccessToken')) {
+    function getGoogleAccessToken($code) {
+        throw new RuntimeException('Google OAuth is disabled.');
+    }
 }
 
-/**
- * Exchange authorization code for access token
- * @param string $code
- * @return array|null
- */
-function getGoogleAccessToken($code) {
-    $params = [
-        'client_id' => GOOGLE_CLIENT_ID,
-        'client_secret' => GOOGLE_CLIENT_SECRET,
-        'redirect_uri' => GOOGLE_REDIRECT_URI,
-        'grant_type' => 'authorization_code',
-        'code' => $code
-    ];
-    
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, GOOGLE_TOKEN_URL);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
-    
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curlError = curl_error($ch);
-    curl_close($ch);
-    
-    $data = json_decode($response, true);
-    
-    if ($httpCode === 200 && isset($data['access_token'])) {
-        return $data;
+if (!function_exists('getGoogleUserInfo')) {
+    function getGoogleUserInfo($accessToken) {
+        throw new RuntimeException('Google OAuth is disabled.');
     }
-    
-    error_log("Google token error (HTTP $httpCode): " . $response);
-    if ($curlError) {
-        error_log("cURL error: " . $curlError);
-    }
-    
-    // Return error info for debugging
-    return $data;
-}
-
-/**
- * Get user info from Google
- * @param string $accessToken
- * @return array|null
- */
-function getGoogleUserInfo($accessToken) {
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, GOOGLE_USER_INFO_URL);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Authorization: Bearer ' . $accessToken
-    ]);
-    
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    
-    if ($httpCode === 200) {
-        return json_decode($response, true);
-    }
-    
-    error_log("Google user info error: " . $response);
-    return null;
 }

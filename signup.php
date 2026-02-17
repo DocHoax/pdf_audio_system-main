@@ -5,7 +5,6 @@
 
 require_once 'includes/auth.php';
 require_once 'includes/User.php';
-require_once 'includes/google_oauth.php';
 require_once 'includes/email.php';
 require_once 'includes/analytics.php';
 require_once 'config.php';
@@ -199,16 +198,6 @@ $metaKeywords = 'EchoDoc signup, create account, register, PDF to audio free';
                         <img src="https://img.icons8.com/fluency/48/add-user-male.png" alt="Sign Up"> Create Account
                     </button>
                 </form>
-
-                <!-- Divider -->
-                <div class="auth-divider">
-                    <span>or continue with</span>
-                </div>
-
-                <!-- Google Sign Up -->
-                <a href="<?php echo htmlspecialchars(getGoogleAuthUrl()); ?>" class="btn btn-google">
-                    <img src="https://img.icons8.com/color/48/google-logo.png" alt="Google"> Sign up with Google
-                </a>
 
                 <div class="auth-footer">
                     <p>Already have an account? <a href="login.php">Login here</a></p>

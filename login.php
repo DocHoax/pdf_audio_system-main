@@ -5,7 +5,6 @@
 
 require_once 'includes/auth.php';
 require_once 'includes/User.php';
-require_once 'includes/google_oauth.php';
 require_once 'config.php';
 
 // Redirect if already logged in
@@ -70,14 +69,11 @@ if (isset($_GET['registered'])) {
     $messageType = 'success';
 }
 
-// Check for Google OAuth errors
+// Check for login errors
 if (isset($_GET['error'])) {
     $detail = isset($_GET['detail']) ? ' (' . htmlspecialchars(urldecode($_GET['detail'])) . ')' : '';
     $errorMessages = [
-        'google_denied' => 'Google sign-in was cancelled.',
-        'google_failed' => 'Google sign-in failed. Please try again.',
-        'google_token_failed' => 'Failed to authenticate with Google.' . $detail,
-        'google_user_failed' => 'Could not get user info from Google.',
+        'google_disabled' => 'Google sign-in is disabled. Please use your username/email and password.',
         'database_error' => 'Database error.' . $detail
     ];
     $message = $errorMessages[$_GET['error']] ?? 'An error occurred. Please try again.';
@@ -214,16 +210,6 @@ $metaKeywords = 'EchoDoc login, sign in, PDF to audio account';
                         <img src="https://img.icons8.com/fluency/48/login-rounded-right.png" alt="Login"> Login
                     </button>
                 </form>
-
-                <!-- Divider -->
-                <div class="auth-divider">
-                    <span>or continue with</span>
-                </div>
-
-                <!-- Google Sign In -->
-                <a href="<?php echo htmlspecialchars(getGoogleAuthUrl()); ?>" class="btn btn-google">
-                    <img src="https://img.icons8.com/color/48/google-logo.png" alt="Google"> Sign in with Google
-                </a>
 
                 <div class="auth-footer">
                     <p>Don't have an account? <a href="signup.php">Sign up here</a></p>
