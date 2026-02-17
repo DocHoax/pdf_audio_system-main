@@ -73,7 +73,6 @@ if (isset($_GET['registered'])) {
 if (isset($_GET['error'])) {
     $detail = isset($_GET['detail']) ? ' (' . htmlspecialchars(urldecode($_GET['detail'])) . ')' : '';
     $errorMessages = [
-        'google_disabled' => 'Google sign-in is disabled. Please use your username/email and password.',
         'database_error' => 'Database error.' . $detail
     ];
     $message = $errorMessages[$_GET['error']] ?? 'An error occurred. Please try again.';
