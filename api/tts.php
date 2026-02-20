@@ -131,10 +131,45 @@ if (strpos($contentType, 'audio/') !== false) {
     // Response might be JSON with URL or other format
     $responseData = json_decode($response, true);
     if ($responseData) {
-        echo json_encode([
-            'success' => true,
-            'data' => $responseData
-        ]);
+        // Check if the JSON contains an audio URL we can fetch
+        $audioUrl = $responseData['audio_url'] ?? $responseData['url'] ?? $responseData['audio'] ?? null;
+        
+        if ($audioUrl && filter_var($audioUrl, FILTER_VALIDATE_URL)) {
+            // Fetch the actual audio from the URL
+            $audioCh = curl_init($audioUrl);
+            curl_setopt_array($audioCh, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 60,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_SSL_VERIFYHOST => 2
+            ]);
+            $audioResponse = curl_exec($audioCh);
+            $audioContentType = curl_getinfo($audioCh, CURLINFO_CONTENT_TYPE);
+            $audioHttpCode = curl_getinfo($audioCh, CURLINFO_HTTP_CODE);
+            $audioError = curl_error($audioCh);
+            curl_close($audioCh);
+            
+            if ($audioHttpCode === 200 && $audioResponse && !$audioError) {
+                $base64Audio = base64_encode($audioResponse);
+                $mimeType = (strpos($audioContentType, 'audio/') !== false) 
+                    ? $audioContentType 
+                    : 'audio/' . $responseFormat;
+                echo json_encode([
+                    'success' => true,
+                    'audio' => $base64Audio,
+                    'mime_type' => $mimeType,
+                    'format' => $responseFormat
+                ]);
+            } else {
+                http_response_code(502);
+                echo json_encode(['error' => 'Failed to fetch audio from URL: ' . ($audioError ?: 'HTTP ' . $audioHttpCode)]);
+            }
+        } else {
+            // No usable audio URL in JSON response
+            http_response_code(502);
+            echo json_encode(['error' => 'API returned unexpected response format (no audio data)']);
+        }
     } else {
         // Assume it's binary audio data
         $base64Audio = base64_encode($response);

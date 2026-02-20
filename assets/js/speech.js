@@ -244,6 +244,11 @@ async function textToSpeech(text, voice) {
             throw new Error(data.error || 'TTS conversion failed');
         }
 
+        // Validate that audio data is present
+        if (!data.audio || data.audio.length === 0) {
+            throw new Error(data.error || 'No audio data returned. The voice may not support this language.');
+        }
+
         return data;
     } catch (error) {
         console.error('TTS API Error:', error);
@@ -450,13 +455,23 @@ async function playNextChunk() {
  * Convert base64 string to Blob
  */
 function base64ToBlob(base64, mimeType) {
-    const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    if (!base64 || typeof base64 !== 'string' || base64.length === 0) {
+        throw new Error('Invalid audio data received');
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: mimeType });
+    try {
+        const byteCharacters = atob(base64);
+        if (byteCharacters.length === 0) {
+            throw new Error('Audio data is empty');
+        }
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: mimeType });
+    } catch (e) {
+        throw new Error('Failed to decode audio: ' + e.message);
+    }
 }
 
 /**
@@ -481,8 +496,25 @@ function handleAudioError(event) {
         return;
     }
     
-    console.error('Audio playback error:', audioElement.error ? audioElement.error.message : 'unknown');
-    updateStatus('Error playing audio');
+    const mediaError = audioElement.error;
+    let errorMsg = 'Error playing audio';
+    if (mediaError) {
+        switch (mediaError.code) {
+            case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                errorMsg = 'Audio format not supported. Try a different voice or shorter text.';
+                break;
+            case MediaError.MEDIA_ERR_NETWORK:
+                errorMsg = 'Network error while loading audio.';
+                break;
+            case MediaError.MEDIA_ERR_DECODE:
+                errorMsg = 'Audio decoding failed. Try again.';
+                break;
+            default:
+                errorMsg = 'Error: ' + (mediaError.message || 'Failed to play audio');
+        }
+    }
+    console.error('Audio playback error:', mediaError ? mediaError.message : 'unknown');
+    updateStatus(errorMsg);
     isPlaying = false;
     isLoading = false;
     updateButtons();
