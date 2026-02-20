@@ -3,7 +3,7 @@
  * Provides offline functionality and caching for PWA
  */
 
-const CACHE_NAME = 'echodoc-v4';
+const CACHE_NAME = 'echodoc-v5';
 const OFFLINE_URL = '/offline.html';
 
 // Assets to cache immediately on install

@@ -177,7 +177,7 @@ function getUploadErrorMessage($errorCode) {
     <title>EchoDoc - Nigerian Language PDF Reader | Yoruba, Hausa, Igbo Text to Speech</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/48/pdf.png">
-    <link rel="stylesheet" href="assets/css/style.css?v=9">
+    <link rel="stylesheet" href="assets/css/style.css?v=10">
     <link rel="stylesheet" href="assets/css/auth.css?v=2">
     <?php include 'includes/seo.php'; ?>
 </head>
