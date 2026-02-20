@@ -44,8 +44,8 @@ define('ALLOWED_EXTENSIONS', ['pdf']);
 
 // Session settings (only set if session not already active)
 if (session_status() === PHP_SESSION_NONE) {
-    ini_set('session.gc_maxlifetime', 3600); // 1 hour
-    ini_set('session.cookie_lifetime', 3600);
+    ini_set('session.gc_maxlifetime', 2592000); // 30 days
+    ini_set('session.cookie_lifetime', 2592000);
 }
 
 // Text extraction settings

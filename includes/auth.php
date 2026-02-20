@@ -9,10 +9,16 @@ require_once __DIR__ . '/security_headers.php';
 
 // Configure session settings before starting
 if (session_status() === PHP_SESSION_NONE) {
+    // Keep sessions persistent across browser restarts (30 days)
+    $sessionLifetime = 60 * 60 * 24 * 30;
+
+    ini_set('session.gc_maxlifetime', (string)$sessionLifetime);
+    ini_set('session.cookie_lifetime', (string)$sessionLifetime);
+
     // Set session cookie parameters for better mobile compatibility
     $isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
     $cookieParams = [
-        'lifetime' => 0,
+        'lifetime' => $sessionLifetime,
         'path' => '/',
         'domain' => '',
         'secure' => $isSecure,
