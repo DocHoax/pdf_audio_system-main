@@ -95,18 +95,6 @@ $errno = curl_errno($ch);
 
 curl_close($ch);
 
-// Debug logging - write to a temp file so we can see exactly what the API returns
-$debugLog = date('Y-m-d H:i:s') . "\n";
-$debugLog .= "Text: " . substr($text, 0, 100) . "\n";
-$debugLog .= "Voice: $voice\n";
-$debugLog .= "HTTP Code: $httpCode\n";
-$debugLog .= "Content-Type: $contentType\n";
-$debugLog .= "Response length: " . strlen($response) . "\n";
-$debugLog .= "Response first 500 chars: " . substr($response, 0, 500) . "\n";
-$debugLog .= "cURL error: $error ($errno)\n";
-$debugLog .= "---\n";
-file_put_contents(__DIR__ . '/../tts_debug.log', $debugLog, FILE_APPEND);
-
 // Check for cURL errors
 if ($errno || $error) {
     http_response_code(500);

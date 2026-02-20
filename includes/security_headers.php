@@ -15,6 +15,7 @@ if (!function_exists('applySecurityHeaders')) {
             . "img-src 'self' data: https:; "
             . "font-src 'self' data: https:; "
             . "connect-src 'self' https:; "
+            . "media-src 'self' blob:; "
             . "base-uri 'self'; "
             . "form-action 'self'; "
             . "frame-ancestors 'none'";
