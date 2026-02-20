@@ -50,7 +50,7 @@ $metaTitle = 'Recent Files - EchoDoc';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php include 'includes/performance.php'; ?>
     <title><?php echo htmlspecialchars($metaTitle); ?></title>
-    <link rel="stylesheet" href="assets/css/style.css?v=8">
+    <link rel="stylesheet" href="assets/css/style.css?v=9">
     <link rel="stylesheet" href="assets/css/pages.css">
     <?php include 'includes/seo.php'; ?>
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/pdf.png">
