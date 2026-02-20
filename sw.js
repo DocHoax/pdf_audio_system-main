@@ -3,16 +3,11 @@
  * Provides offline functionality and caching for PWA
  */
 
-const CACHE_NAME = 'echodoc-v3';
+const CACHE_NAME = 'echodoc-v4';
 const OFFLINE_URL = '/offline.html';
 
 // Assets to cache immediately on install
 const PRECACHE_ASSETS = [
-    '/',
-    '/index.php',
-    '/about.php',
-    '/help.php',
-    '/contact.php',
     '/assets/css/style.css',
     '/assets/css/auth.css',
     '/assets/js/main.js',
@@ -75,6 +70,23 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
+    // Always use network for page navigation to avoid stale auth/session pages.
+    // Never cache dynamic PHP navigation responses.
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            fetch(event.request)
+                .catch(() => caches.match(OFFLINE_URL))
+        );
+        return;
+    }
+
+    // Cache only static assets; dynamic endpoints should stay network-only.
+    const isStaticAsset = /\.(?:css|js|png|jpg|jpeg|gif|svg|webp|ico|woff|woff2|ttf)$/i.test(url.pathname);
+    if (!isStaticAsset) {
+        event.respondWith(fetch(event.request));
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request)
             .then((cachedResponse) => {
@@ -84,7 +96,7 @@ self.addEventListener('fetch', (event) => {
                     event.waitUntil(
                         fetch(event.request)
                             .then((response) => {
-                                if (response.ok) {
+                                if (response.ok && response.type === 'basic' && !response.redirected) {
                                     caches.open(CACHE_NAME)
                                         .then((cache) => cache.put(event.request, response));
                                 }
@@ -98,7 +110,7 @@ self.addEventListener('fetch', (event) => {
                 return fetch(event.request)
                     .then((response) => {
                         // Cache successful responses
-                        if (response.ok && response.type === 'basic') {
+                        if (response.ok && response.type === 'basic' && !response.redirected) {
                             const responseClone = response.clone();
                             caches.open(CACHE_NAME)
                                 .then((cache) => cache.put(event.request, responseClone));
