@@ -3,7 +3,7 @@
  * Provides offline functionality and caching for PWA
  */
 
-const CACHE_NAME = 'echodoc-v2';
+const CACHE_NAME = 'echodoc-v3';
 const OFFLINE_URL = '/offline.html';
 
 // Assets to cache immediately on install
@@ -28,7 +28,14 @@ self.addEventListener('install', (event) => {
         caches.open(CACHE_NAME)
             .then((cache) => {
                 console.log('[SW] Precaching assets');
-                return cache.addAll(PRECACHE_ASSETS);
+                return Promise.all(
+                    PRECACHE_ASSETS.map((asset) =>
+                        cache.add(asset).catch(() => {
+                            console.warn('[SW] Failed to precache:', asset);
+                            return null;
+                        })
+                    )
+                );
             })
             .then(() => self.skipWaiting())
     );
@@ -55,6 +62,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     // Skip non-GET requests
     if (event.request.method !== 'GET') return;
+
+    // Prevent Chrome/Safari errors for special requests
+    if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
+        return;
+    }
 
     // Skip API calls and external resources
     const url = new URL(event.request.url);

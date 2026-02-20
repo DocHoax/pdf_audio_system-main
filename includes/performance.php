@@ -39,30 +39,46 @@
 <script>
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
+    window.addEventListener('load', function() {
         navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('[PWA] Service worker registered'))
-            .catch(err => console.log('[PWA] Service worker registration failed:', err));
+            .then(function() { console.log('[PWA] Service worker registered'); })
+            .catch(function(err) { console.log('[PWA] Service worker registration failed:', err); });
     });
 }
 
 // PWA Install Popup for New Users
-let deferredPrompt;
-const PWA_PROMPT_KEY = 'echodoc_pwa_prompted';
+var deferredPrompt;
+var PWA_PROMPT_KEY = 'echodoc_pwa_prompted';
 
-window.addEventListener('beforeinstallprompt', (e) => {
+function safeStorageGet(key) {
+    try {
+        return localStorage.getItem(key);
+    } catch (error) {
+        return null;
+    }
+}
+
+function safeStorageSet(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        // Ignore storage errors in private mode or restricted contexts
+    }
+}
+
+window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
     
     // Check if user has already been prompted
-    if (!localStorage.getItem(PWA_PROMPT_KEY)) {
+    if (!safeStorageGet(PWA_PROMPT_KEY)) {
         showInstallPopup();
     }
 });
 
 function showInstallPopup() {
     // Create popup HTML
-    const popup = document.createElement('div');
+    var popup = document.createElement('div');
     popup.id = 'pwa-install-popup';
     popup.innerHTML = `
         <div class="pwa-popup-overlay"></div>
@@ -82,7 +98,7 @@ function showInstallPopup() {
     document.body.appendChild(popup);
     
     // Add styles
-    const styles = document.createElement('style');
+    var styles = document.createElement('style');
     styles.textContent = `
         #pwa-install-popup {
             position: fixed;
@@ -185,29 +201,38 @@ function showInstallPopup() {
     document.head.appendChild(styles);
     
     // Handle Install button
-    document.getElementById('pwa-install-btn').addEventListener('click', async () => {
+    document.getElementById('pwa-install-btn').addEventListener('click', function() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log('[PWA] Install outcome:', outcome);
-            deferredPrompt = null;
+            deferredPrompt.userChoice
+                .then(function(choiceResult) {
+                    console.log('[PWA] Install outcome:', choiceResult.outcome);
+                    deferredPrompt = null;
+                })
+                .catch(function() {
+                    deferredPrompt = null;
+                });
         }
-        localStorage.setItem(PWA_PROMPT_KEY, 'true');
+        safeStorageSet(PWA_PROMPT_KEY, 'true');
         closeInstallPopup();
     });
     
     // Handle Dismiss button
-    document.getElementById('pwa-dismiss-btn').addEventListener('click', () => {
-        localStorage.setItem(PWA_PROMPT_KEY, 'true');
+    document.getElementById('pwa-dismiss-btn').addEventListener('click', function() {
+        safeStorageSet(PWA_PROMPT_KEY, 'true');
         closeInstallPopup();
     });
 }
 
 function closeInstallPopup() {
-    const popup = document.getElementById('pwa-install-popup');
+    var popup = document.getElementById('pwa-install-popup');
     if (popup) {
         popup.style.animation = 'fadeIn 0.3s ease reverse';
-        setTimeout(() => popup.remove(), 280);
+        setTimeout(function() {
+            if (popup.parentNode) {
+                popup.parentNode.removeChild(popup);
+            }
+        }, 280);
     }
 }
 </script>

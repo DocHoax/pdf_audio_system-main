@@ -39,6 +39,31 @@ const hiddenText = document.getElementById('hiddenText');
 // YarnGPT API Configuration
 const TTS_API_ENDPOINT = 'api/tts.php';
 
+function safeScrollIntoView(element, options) {
+    if (!element) return;
+    try {
+        element.scrollIntoView(options);
+    } catch (error) {
+        element.scrollIntoView(true);
+    }
+}
+
+function textContains(text, token) {
+    if (typeof text !== 'string') return false;
+    if (typeof text.includes === 'function') {
+        return text.includes(token);
+    }
+    return text.indexOf(token) !== -1;
+}
+
+function textEndsWith(text, suffix) {
+    if (typeof text !== 'string') return false;
+    if (typeof text.endsWith === 'function') {
+        return text.endsWith(suffix);
+    }
+    return text.slice(-suffix.length) === suffix;
+}
+
 /**
  * Initialize the speech synthesis system
  */
@@ -107,7 +132,7 @@ function highlightCurrentChunk() {
     // Scroll to active chunk
     const activeChunk = textDisplay.querySelector('.highlight-chunk.active');
     if (activeChunk) {
-        activeChunk.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        safeScrollIntoView(activeChunk, { behavior: 'smooth', block: 'center' });
     }
 }
 
@@ -452,7 +477,7 @@ function handleAudioEnded() {
 function handleAudioError(event) {
     // Ignore errors from empty src or page URL (happens when stopping)
     const src = audioElement.src;
-    if (!src || src === '' || src === window.location.href || src.endsWith('index.php')) {
+    if (!src || src === '' || src === window.location.href || textEndsWith(src, 'index.php')) {
         return;
     }
     
@@ -642,15 +667,15 @@ function updateStatus(message) {
         
         // Update status color based on state
         statusValue.className = 'status-value';
-        if (message.includes('Playing')) {
+        if (textContains(message, 'Playing')) {
             statusValue.style.color = '#10b981';
-        } else if (message.includes('Paused')) {
+        } else if (textContains(message, 'Paused')) {
             statusValue.style.color = '#f59e0b';
-        } else if (message.includes('Loading')) {
+        } else if (textContains(message, 'Loading')) {
             statusValue.style.color = '#8b5cf6';
-        } else if (message.includes('Error') || message.includes('Stopped')) {
+        } else if (textContains(message, 'Error') || textContains(message, 'Stopped')) {
             statusValue.style.color = '#ef4444';
-        } else if (message.includes('Finished')) {
+        } else if (textContains(message, 'Finished')) {
             statusValue.style.color = '#2563eb';
         } else {
             statusValue.style.color = '#2563eb';

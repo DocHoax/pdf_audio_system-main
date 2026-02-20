@@ -11,6 +11,32 @@ document.addEventListener('DOMContentLoaded', function() {
     initUserMenu();
 });
 
+function setClassState(element, className, shouldHaveClass) {
+    if (!element) return;
+    if (shouldHaveClass) {
+        element.classList.add(className);
+    } else {
+        element.classList.remove(className);
+    }
+}
+
+function safeScrollIntoView(element, options) {
+    if (!element) return;
+    try {
+        element.scrollIntoView(options);
+    } catch (error) {
+        element.scrollIntoView(true);
+    }
+}
+
+function arrayContains(arr, value) {
+    if (!arr) return false;
+    if (typeof arr.includes === 'function') {
+        return arr.includes(value);
+    }
+    return arr.indexOf(value) !== -1;
+}
+
 /**
  * Initialize user menu dropdown
  */
@@ -60,7 +86,7 @@ function initNavigation() {
         navToggle.addEventListener('click', function() {
             navMenu.classList.toggle('active');
             const isOpen = navMenu.classList.contains('active');
-            document.body.classList.toggle('nav-open', isOpen);
+            setClassState(document.body, 'nav-open', isOpen);
             navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
             
             // Toggle icon
@@ -114,6 +140,7 @@ function initFileUpload() {
     const uploadBtn = document.getElementById('uploadBtn');
     const uploadForm = document.getElementById('uploadForm');
     let fileInfoTimeout = null;
+    let droppedFileFallback = null;
 
     if (!dropZone || !fileInput) return;
 
@@ -153,14 +180,34 @@ function initFileUpload() {
         const files = dt.files;
 
         if (files.length > 0) {
-            fileInput.files = files;
-            handleFileSelect(files[0]);
+            const droppedFile = files[0];
+            let attachedToInput = false;
+
+            if (typeof DataTransfer !== 'undefined') {
+                try {
+                    const transfer = new DataTransfer();
+                    transfer.items.add(droppedFile);
+                    fileInput.files = transfer.files;
+                    attachedToInput = fileInput.files && fileInput.files.length > 0;
+                } catch (error) {
+                    attachedToInput = false;
+                }
+            }
+
+            if (!attachedToInput) {
+                droppedFileFallback = droppedFile;
+            } else {
+                droppedFileFallback = null;
+            }
+
+            handleFileSelect(droppedFile);
         }
     }
 
     // Handle file selection via input
     fileInput.addEventListener('change', function() {
         if (this.files.length > 0) {
+            droppedFileFallback = null;
             handleFileSelect(this.files[0]);
         }
     });
@@ -177,9 +224,10 @@ function initFileUpload() {
         const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
         const validExtensions = ['pdf', 'docx'];
         
-        if (!validTypes.includes(fileType) && !validExtensions.includes(fileExtension)) {
+        if (!arrayContains(validTypes, fileType) && !arrayContains(validExtensions, fileExtension)) {
             showFileInfo(`Error: "${fileName}" is not a supported file. Please upload a PDF or DOCX file.`, 'error');
             fileInput.value = '';
+            droppedFileFallback = null;
             return;
         }
 
@@ -187,6 +235,7 @@ function initFileUpload() {
         if (file.size > 10 * 1024 * 1024) {
             showFileInfo(`Error: File size (${fileSize}) exceeds 10MB limit.`, 'error');
             fileInput.value = '';
+            droppedFileFallback = null;
             return;
         }
 
@@ -221,7 +270,15 @@ function initFileUpload() {
     // Form submission handling
     if (uploadForm) {
         uploadForm.addEventListener('submit', function(e) {
-            if (!fileInput.files || fileInput.files.length === 0) {
+            const hasInputFile = fileInput.files && fileInput.files.length > 0;
+
+            if (!hasInputFile && droppedFileFallback && window.FormData && window.fetch) {
+                e.preventDefault();
+                submitDroppedFileFallback();
+                return;
+            }
+
+            if (!hasInputFile) {
                 e.preventDefault();
                 showFileInfo('Please select a PDF file first.', 'error');
                 return;
@@ -233,6 +290,54 @@ function initFileUpload() {
                 uploadBtn.innerHTML = '<img src="https://img.icons8.com/fluency/48/spinner-frame-5.png" alt="Loading" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"> Processing...';
             }
         });
+    }
+
+    async function submitDroppedFileFallback() {
+        const formAction = uploadForm.getAttribute('action') || window.location.href;
+        const formMethod = (uploadForm.getAttribute('method') || 'POST').toUpperCase();
+
+        if (formMethod !== 'POST') {
+            showFileInfo('Upload is not supported on this browser. Please use the file picker.', 'error');
+            return;
+        }
+
+        try {
+            if (uploadBtn) {
+                uploadBtn.disabled = true;
+                uploadBtn.innerHTML = '<img src="https://img.icons8.com/fluency/48/spinner-frame-5.png" alt="Loading" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"> Processing...';
+            }
+
+            const formData = new FormData(uploadForm);
+            formData.append(fileInput.name || 'pdf_file', droppedFileFallback, droppedFileFallback.name);
+
+            const response = await fetch(formAction, {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin'
+            });
+
+            if (!response.ok) {
+                throw new Error('Upload failed');
+            }
+
+            const responseUrl = response.url;
+            const responseHtml = await response.text();
+
+            if (responseUrl && responseUrl !== window.location.href) {
+                window.location.href = responseUrl;
+                return;
+            }
+
+            document.open();
+            document.write(responseHtml);
+            document.close();
+        } catch (error) {
+            showFileInfo('Could not upload dropped file. Please use the file picker and try again.', 'error');
+            if (uploadBtn) {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<img src="https://img.icons8.com/fluency/48/upload.png" alt="Upload"> Upload & Process';
+            }
+        }
     }
 }
 
@@ -275,7 +380,7 @@ function initFAQ() {
 function scrollToElement(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
-        element.scrollIntoView({
+        safeScrollIntoView(element, {
             behavior: 'smooth',
             block: 'start'
         });
