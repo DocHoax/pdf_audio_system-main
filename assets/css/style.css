@@ -843,49 +843,76 @@ body.nav-open {
 
 .playback-controls .btn {
     min-width: 136px;
-    min-height: 46px;
-    border-radius: var(--radius-xl);
+    min-height: 48px;
+    border-radius: var(--radius-2xl);
+    border: 1px solid transparent;
     box-shadow: var(--shadow-sm);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     font-family: var(--font-modern);
     font-weight: 700;
     text-transform: uppercase;
+    padding: 0.78rem 1.15rem;
+    position: relative;
+    overflow: hidden;
+    color: var(--gray-100);
+}
+
+.playback-controls .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 56%);
+    pointer-events: none;
 }
 
 .playback-controls .btn:hover:not(:disabled) {
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.01);
     box-shadow: var(--shadow-md);
+}
+
+.playback-controls .btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
 }
 
 .playback-controls .btn img {
     width: 18px;
     height: 18px;
+    opacity: 0.95;
 }
 
 .playback-controls .btn:disabled {
-    opacity: 0.62;
-    filter: saturate(0.75);
+    background: var(--gray-400);
+    color: var(--gray-100);
+    border-color: var(--gray-300);
+    opacity: 0.68;
+    filter: none;
     box-shadow: none;
 }
 
 .playback-controls .btn-success {
-    background: linear-gradient(135deg, #2d6a4f 0%, #1f5a41 100%);
+    background: linear-gradient(135deg, var(--success-color) 0%, #235c43 100%);
+    border-color: #235c43;
 }
 
 .playback-controls .btn-warning {
-    background: linear-gradient(135deg, #d3a77f 0%, #c69367 100%);
+    background: linear-gradient(135deg, var(--warning-color) 0%, #a55d20 100%);
+    border-color: #a55d20;
 }
 
 .playback-controls .btn-info {
-    background: linear-gradient(135deg, #97a5bc 0%, #8696af 100%);
+    background: linear-gradient(135deg, var(--info-color) 0%, #2d4a6a 100%);
+    border-color: #2d4a6a;
 }
 
 .playback-controls .btn-danger {
-    background: linear-gradient(135deg, #c88a8f 0%, #bb777e 100%);
+    background: linear-gradient(135deg, var(--danger-color) 0%, #7d1a1d 100%);
+    border-color: #7d1a1d;
 }
 
 .playback-controls .btn-primary {
-    background: linear-gradient(135deg, #333b47 0%, #252b34 100%);
+    background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%);
+    border-color: var(--gray-700);
 }
 
 /* ========== Progress Bar ========== */
