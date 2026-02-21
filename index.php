@@ -227,12 +227,42 @@ function getUploadErrorMessage($errorCode) {
     <header class="hero">
         <div class="hero-content">
             <h1><img src="https://img.icons8.com/fluency/96/pdf.png" alt="EchoDoc"> EchoDoc</h1>
-            <p>The #1 Nigerian language PDF reader. Convert documents to audio in <strong>Yoruba</strong>, <strong>Hausa</strong>, and <strong>Igbo</strong> with AI-powered voice synthesis</p>
+            <p>The #1 African Language AI PDF Reader. Transform any document into natural, human-like speech in <strong>English</strong>, <strong>Yoruba</strong>, <strong>Hausa</strong>, and <strong>Igbo</strong>.</p>
+            <?php if (!isLoggedIn()): ?>
+            <div class="hero-cta" style="margin-top: 20px;">
+                <a href="signup.php" class="btn btn-primary" style="font-size: 1.1rem; padding: 12px 24px; margin-right: 10px;">Get Started for Free</a>
+                <a href="about.php" class="btn btn-secondary" style="font-size: 1.1rem; padding: 12px 24px;">Learn More</a>
+            </div>
+            <?php endif; ?>
         </div>
     </header>
 
+    <!-- Marketing Features Section (Visible to all) -->
+    <section class="marketing-features" style="background-color: #f8f9fa; padding: 40px 0; text-align: center; border-bottom: 1px solid #eaeaea;">
+        <div class="container">
+            <h2 style="margin-bottom: 30px; color: #333;">Why Choose EchoDoc?</h2>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+                <div style="flex: 1; min-width: 250px; max-width: 300px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <img src="https://img.icons8.com/fluency/64/voice-recognition.png" alt="Native Voices" style="margin-bottom: 15px;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 10px;">Authentic African Voices</h3>
+                    <p style="color: #666; font-size: 0.95rem;">Powered by YarnGPT AI, listen to your documents in natural-sounding Yoruba, Hausa, Igbo, and English accents.</p>
+                </div>
+                <div style="flex: 1; min-width: 250px; max-width: 300px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <img src="https://img.icons8.com/fluency/64/accessibility2.png" alt="Accessibility" style="margin-bottom: 15px;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 10px;">Built for Accessibility</h3>
+                    <p style="color: #666; font-size: 0.95rem;">Designed to assist users with visual impairments, dyslexia, and reading disabilities with an intuitive interface.</p>
+                </div>
+                <div style="flex: 1; min-width: 250px; max-width: 300px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <img src="https://img.icons8.com/fluency/64/flash-on.png" alt="Fast Processing" style="margin-bottom: 15px;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 10px;">Lightning Fast</h3>
+                    <p style="color: #666; font-size: 0.95rem;">Instantly extract text from complex PDFs and Word documents and convert them to high-quality audio on the fly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content" style="padding-top: 40px;">
         <div class="container">
             <!-- Message Display -->
             <?php if (!empty($message)): ?>

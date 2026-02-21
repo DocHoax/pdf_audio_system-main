@@ -219,6 +219,18 @@ $metaKeywords = 'about EchoDoc, PDF accessibility, text to speech technology, re
                         <li>Support multiple languages based on browser capabilities</li>
                     </ul>
                 </div>
+
+                <!-- Call to Action -->
+                <div class="about-content" style="text-align: center; background: linear-gradient(135deg, #f6f8fd 0%, #f1f5f9 100%); padding: 40px 20px; border-radius: 12px; margin-top: 40px; border: 1px solid #e2e8f0;">
+                    <h2 style="margin-bottom: 15px; color: #1e293b;">Ready to Experience EchoDoc?</h2>
+                    <p style="font-size: 1.1rem; color: #475569; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                        Join thousands of users who are already transforming their reading experience. Upload your first document today and listen in your preferred language.
+                    </p>
+                    <a href="signup.php" class="btn btn-primary" style="font-size: 1.1rem; padding: 12px 30px; border-radius: 30px; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.39);">
+                        <img src="https://img.icons8.com/fluency/48/rocket.png" alt="Start" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">
+                        Get Started for Free
+                    </a>
+                </div>
             </section>
         </div>
     </main>
