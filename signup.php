@@ -56,15 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $loginResult = $user->login($username, $password);
                 if ($loginResult['success']) {
                     setUserSession($loginResult['user']);
-                    session_write_close();
-                    header('Location: index.php?welcome=1');
-                    exit;
+                    redirectWithSessionFlush('index.php?welcome=1');
                 }
                 
                 // Fallback: redirect to login
-                session_write_close();
-                header('Location: login.php?registered=1');
-                exit;
+                redirectWithSessionFlush('login.php?registered=1');
             } else {
                 $message = $result['message'];
                 $messageType = 'error';

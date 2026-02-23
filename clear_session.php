@@ -26,9 +26,5 @@ if (isset($_SESSION[$fileKey])) {
     unset($_SESSION[$fileKey]);
 }
 
-// Ensure session changes are written before redirect
-session_write_close();
-
 // Redirect to main page
-header('Location: index.php');
-exit;
+redirectWithSessionFlush('index.php');

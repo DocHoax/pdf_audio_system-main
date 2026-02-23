@@ -26,14 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_SESSION[$recentKey][$index])) {
             array_splice($_SESSION[$recentKey], $index, 1);
         }
-        header('Location: recent.php');
-        exit;
+        redirectWithSessionFlush('recent.php');
     }
 
     if (isset($_POST['clear_all'])) {
         $_SESSION[$recentKey] = [];
-        header('Location: recent.php');
-        exit;
+        redirectWithSessionFlush('recent.php');
     }
 }
 

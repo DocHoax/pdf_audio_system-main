@@ -12,6 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
     // Keep sessions persistent across browser restarts (30 days)
     $sessionLifetime = 60 * 60 * 24 * 30;
 
+    ini_set('session.use_strict_mode', '1');
     ini_set('session.gc_maxlifetime', (string)$sessionLifetime);
     ini_set('session.cookie_lifetime', (string)$sessionLifetime);
 
@@ -43,11 +44,42 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 /**
+ * Write and close session safely.
+ */
+function flushSession() {
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
+}
+
+/**
+ * Redirect while safely flushing session data first.
+ * @param string $location
+ */
+function redirectWithSessionFlush($location) {
+    flushSession();
+    header('Location: ' . $location);
+    exit;
+}
+
+/**
  * Check if user is logged in
  * @return bool
  */
 function isLoggedIn() {
-    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+    if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+        return false;
+    }
+
+    if (!isset($_SESSION['user']) || !is_array($_SESSION['user'])) {
+        return false;
+    }
+
+    if (!isset($_SESSION['user']['id'])) {
+        return false;
+    }
+
+    return (string)$_SESSION['user']['id'] === (string)$_SESSION['user_id'];
 }
 
 /**
@@ -123,26 +155,34 @@ function setUserSession($user) {
     
     // Force session data to be written immediately
     // This prevents race conditions where redirects happen before data is saved
-    session_write_close();
-    
-    // Re-open session so subsequent code can still use it
-    session_start();
+    flushSession();
 }
 
 /**
  * Clear user session (logout)
  */
 function clearUserSession() {
-    // Clear user-specific session data
-    unset($_SESSION['user_id']);
-    unset($_SESSION['user']);
-    unset($_SESSION['logged_in_at']);
-    
-    // Force session data to be written immediately
-    session_write_close();
-    
-    // Re-open session for any subsequent code
-    session_start();
+    // Clear all session data
+    $_SESSION = [];
+
+    // Delete the session cookie if present
+    if (ini_get('session.use_cookies')) {
+        $params = session_get_cookie_params();
+        setcookie(
+            session_name(),
+            '',
+            time() - 42000,
+            $params['path'] ?? '/',
+            $params['domain'] ?? '',
+            $params['secure'] ?? false,
+            $params['httponly'] ?? true
+        );
+    }
+
+    // Destroy server-side session data
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_destroy();
+    }
 }
 
 /**
@@ -152,8 +192,7 @@ function clearUserSession() {
 function requireAuth($redirectUrl = null) {
     if (!isLoggedIn()) {
         $redirect = $redirectUrl ? '?redirect=' . urlencode($redirectUrl) : '';
-        header('Location: login.php' . $redirect);
-        exit;
+        redirectWithSessionFlush('login.php' . $redirect);
     }
 }
 
@@ -163,8 +202,7 @@ function requireAuth($redirectUrl = null) {
  */
 function redirectIfLoggedIn($destination = 'index.php') {
     if (isLoggedIn()) {
-        header('Location: ' . $destination);
-        exit;
+        redirectWithSessionFlush($destination);
     }
 }
 

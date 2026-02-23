@@ -49,7 +49,7 @@ $event = $input['event'];
 $data = $input['data'] ?? [];
 
 // Get user ID if logged in
-$userId = isLoggedIn() ? getCurrentUser()['id'] : null;
+$userId = isLoggedIn() ? getCurrentUserId() : null;
 
 try {
     switch ($event) {

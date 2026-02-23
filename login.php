@@ -100,9 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Handle redirect
             $redirect = sanitizeRedirectPath($_GET['redirect'] ?? $_POST['redirect'] ?? 'index.php');
             
-            session_write_close();
-            header('Location: ' . $redirect);
-            exit;
+            redirectWithSessionFlush($redirect);
         } else {
             $message = $result['message'];
             $messageType = 'error';
