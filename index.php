@@ -237,6 +237,7 @@ function getUploadErrorMessage($errorCode) {
         </div>
     </header>
 
+    <?php if (!isLoggedIn()): ?>
     <!-- Marketing Features Section (Visible to all) -->
     <section class="marketing-features" style="background-color: #f8f9fa; padding: 40px 0; text-align: center; border-bottom: 1px solid #eaeaea;">
         <div class="container">
@@ -260,6 +261,7 @@ function getUploadErrorMessage($errorCode) {
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
     <!-- Main Content -->
     <main class="main-content" style="padding-top: 40px;">
