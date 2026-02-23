@@ -23,6 +23,12 @@ if (!function_exists('applySecurityHeaders')) {
         header('Content-Security-Policy: ' . $csp);
         header('X-Frame-Options: DENY');
         header('Referrer-Policy: strict-origin-when-cross-origin');
+
+        // Prevent browsers from caching dynamic PHP pages
+        // This ensures logged-in/logged-out state is always fresh
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: 0');
     }
 }
 

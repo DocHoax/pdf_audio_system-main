@@ -120,6 +120,13 @@ function setUserSession($user) {
     
     // Regenerate session ID for security
     session_regenerate_id(true);
+    
+    // Force session data to be written immediately
+    // This prevents race conditions where redirects happen before data is saved
+    session_write_close();
+    
+    // Re-open session so subsequent code can still use it
+    session_start();
 }
 
 /**
@@ -131,8 +138,11 @@ function clearUserSession() {
     unset($_SESSION['user']);
     unset($_SESSION['logged_in_at']);
     
-    // Optionally destroy entire session
-    // session_destroy();
+    // Force session data to be written immediately
+    session_write_close();
+    
+    // Re-open session for any subsequent code
+    session_start();
 }
 
 /**
