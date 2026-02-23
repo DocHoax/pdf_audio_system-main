@@ -61,7 +61,7 @@ if (!array_key_exists($targetLang, $supportedLanguages)) {
 
 // If target is English, just return the original text
 if ($targetLang === 'en') {
-    header('Content-Type: application/json');
+    ob_end_clean();
     echo json_encode([
         'success' => true,
         'translated_text' => $text,
@@ -75,7 +75,7 @@ if ($targetLang === 'en') {
 try {
     $translatedText = translateText($text, $targetLang);
     
-    header('Content-Type: application/json');
+    ob_end_clean();
     echo json_encode([
         'success' => true,
         'translated_text' => $translatedText,
@@ -84,6 +84,7 @@ try {
         'language_name' => $supportedLanguages[$targetLang]
     ]);
 } catch (Exception $e) {
+    ob_end_clean();
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }

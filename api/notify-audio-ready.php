@@ -5,12 +5,31 @@
  * Sends email notification when MP3 conversion is complete
  */
 
-session_start();
+// Buffer all output to prevent stray PHP errors/warnings from corrupting JSON response
+ob_start();
+
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/email.php';
-require_once __DIR__ . '/../includes/db_config.php';
+// Custom error handler to prevent HTML error output
+set_error_handler(function($severity, $message, $file, $line) {
+    error_log("Notify API Error [$severity]: $message in $file on line $line");
+    return true;
+});
+
+try {
+    require_once __DIR__ . '/../includes/auth.php';
+    require_once __DIR__ . '/../includes/email.php';
+    require_once __DIR__ . '/../includes/db_config.php';
+} catch (Throwable $e) {
+    ob_end_clean();
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => 'Server configuration error']);
+    error_log('Notify config error: ' . $e->getMessage());
+    exit;
+}
+
+// Discard any buffered output from includes
+ob_end_clean();
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

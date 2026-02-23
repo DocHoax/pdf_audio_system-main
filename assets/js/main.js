@@ -549,6 +549,14 @@ function initTranslation() {
                 })
             });
 
+            // Check if response is actually JSON before parsing
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                const respText = await response.text();
+                console.error('Translate API returned non-JSON:', respText.substring(0, 200));
+                throw new Error('Server returned an unexpected response. Please try again.');
+            }
+
             const data = await response.json();
 
             if (!response.ok || !data.success) {
