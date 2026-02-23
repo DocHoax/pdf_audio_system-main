@@ -4,10 +4,30 @@
  * Translates text to Nigerian local languages using Google Translate API (free tier)
  */
 
-require_once __DIR__ . '/../includes/security_headers.php';
+// Buffer all output to prevent stray PHP errors/warnings from corrupting JSON response
+ob_start();
+
+header('Content-Type: application/json');
+
+// Custom error handler to prevent HTML error output
+set_error_handler(function($severity, $message, $file, $line) {
+    error_log("Translate API Error [$severity]: $message in $file on line $line");
+    return true;
+});
+
+try {
+    require_once __DIR__ . '/../includes/security_headers.php';
+} catch (Throwable $e) {
+    ob_end_clean();
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => 'Server configuration error']);
+    error_log('Translate config error: ' . $e->getMessage());
+    exit;
+}
 
 // Prevent direct access
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    ob_end_clean();
     http_response_code(405);
     echo json_encode(['success' => false, 'error' => 'Method not allowed']);
     exit;

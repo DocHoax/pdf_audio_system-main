@@ -4,10 +4,28 @@
  * Handles requests to convert text to speech using YarnGPT API
  */
 
+// Buffer all output to prevent stray PHP errors/warnings from corrupting JSON response
+ob_start();
+
+// Set JSON content type early
 header('Content-Type: application/json');
 
-// Include configuration
-require_once __DIR__ . '/../config.php';
+// Custom error handler to prevent HTML error output
+set_error_handler(function($severity, $message, $file, $line) {
+    error_log("TTS API Error [$severity]: $message in $file on line $line");
+    return true; // Prevent default PHP error handler (which may output HTML)
+});
+
+try {
+    // Include configuration
+    require_once __DIR__ . '/../config.php';
+} catch (Throwable $e) {
+    ob_end_clean();
+    http_response_code(500);
+    echo json_encode(['error' => 'Server configuration error']);
+    error_log('TTS config error: ' . $e->getMessage());
+    exit;
+}
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -114,6 +132,12 @@ if ($httpCode !== 200) {
     }
     exit;
 }
+
+// Discard any buffered warnings/notices before sending JSON response
+ob_end_clean();
+
+// Re-set content type in case it was overwritten by an include
+header('Content-Type: application/json');
 
 // Check if response is audio
 if (strpos($contentType, 'audio/') !== false) {

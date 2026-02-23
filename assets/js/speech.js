@@ -234,6 +234,14 @@ async function textToSpeech(text, voice) {
             })
         });
 
+        // Check if response is actually JSON before parsing
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+            const text = await response.text();
+            console.error('TTS API returned non-JSON response:', text.substring(0, 200));
+            throw new Error('Server returned an unexpected response (HTTP ' + response.status + '). Please try again.');
+        }
+
         const data = await response.json();
         
         if (!response.ok) {

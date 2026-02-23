@@ -4,10 +4,30 @@
  * Tracks user events from JavaScript
  */
 
-require_once '../includes/auth.php';
-require_once '../includes/analytics.php';
+// Buffer all output to prevent stray PHP errors/warnings from corrupting JSON response
+ob_start();
 
 header('Content-Type: application/json');
+
+// Custom error handler to prevent HTML error output
+set_error_handler(function($severity, $message, $file, $line) {
+    error_log("Analytics API Error [$severity]: $message in $file on line $line");
+    return true;
+});
+
+try {
+    require_once __DIR__ . '/../includes/auth.php';
+    require_once __DIR__ . '/../includes/analytics.php';
+} catch (Throwable $e) {
+    ob_end_clean();
+    http_response_code(500);
+    echo json_encode(['error' => 'Server configuration error']);
+    error_log('Analytics config error: ' . $e->getMessage());
+    exit;
+}
+
+// Discard any buffered output from includes
+ob_end_clean();
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
