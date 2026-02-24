@@ -8,8 +8,7 @@ require_once 'includes/auth.php';
 
 // Only allow logged in users to clear session
 if (!isLoggedIn()) {
-    header('Location: login.php');
-    exit;
+    redirectWithSessionFlush('login.php');
 }
 
 // Get user-specific session keys

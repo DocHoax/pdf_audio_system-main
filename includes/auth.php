@@ -136,8 +136,7 @@ function requireAdmin() {
     requireAuth(); // First ensure user is logged in
     
     if (!isAdmin()) {
-        header('Location: index.php');
-        exit;
+        redirectWithSessionFlush('index.php');
     }
 }
 
