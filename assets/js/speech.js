@@ -17,7 +17,7 @@ let chunks = [];
 let currentChunkIndex = 0;
 let audioQueue = []; // Pre-fetched audio blobs
 const CHUNK_SIZE = 500; // Characters per chunk
-const PREFETCH_AHEAD = 2; // How many chunks to prefetch
+const PREFETCH_AHEAD = 1; // Keep low to reduce concurrent API pressure
 
 // Text Highlighting
 let highlightEnabled = true;
@@ -221,46 +221,69 @@ function splitTextIntoChunks(text) {
  * Convert text to speech using YarnGPT API
  */
 async function textToSpeech(text, voice) {
-    try {
-        const response = await fetch(TTS_API_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                text: text,
-                voice: voice,
-                response_format: 'mp3'
-            })
-        });
+    const maxAttempts = 3;
 
-        // Check if response is actually JSON before parsing
-        const contentType = response.headers.get('content-type') || '';
-        if (!contentType.includes('application/json')) {
-            const text = await response.text();
-            console.error('TTS API returned non-JSON response:', text.substring(0, 200));
-            throw new Error('Server returned an unexpected response (HTTP ' + response.status + '). Please try again.');
-        }
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            const response = await fetch(TTS_API_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: text,
+                    voice: voice,
+                    response_format: 'mp3'
+                })
+            });
 
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.error || `HTTP error: ${response.status}`);
-        }
-        
-        if (!data.success) {
-            throw new Error(data.error || 'TTS conversion failed');
-        }
+            // Check if response is actually JSON before parsing
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                const responseText = await response.text();
+                console.error('TTS API returned non-JSON response:', responseText.substring(0, 200));
 
-        // Validate that audio data is present
-        if (!data.audio || data.audio.length === 0) {
-            throw new Error(data.error || 'No audio data returned. The voice may not support this language.');
-        }
+                if ([502, 503, 504].includes(response.status) && attempt < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, 300 * attempt));
+                    continue;
+                }
 
-        return data;
-    } catch (error) {
-        console.error('TTS API Error:', error);
-        throw error;
+                throw new Error('TTS service is temporarily unavailable. Please try again.');
+            }
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const isTransient = [429, 500, 502, 503, 504].includes(response.status);
+                if (isTransient && attempt < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, 300 * attempt));
+                    continue;
+                }
+                throw new Error(data.error || `HTTP error: ${response.status}`);
+            }
+
+            if (!data.success) {
+                throw new Error(data.error || 'TTS conversion failed');
+            }
+
+            // Validate that audio data is present
+            if (!data.audio || data.audio.length === 0) {
+                throw new Error(data.error || 'No audio data returned. The voice may not support this language.');
+            }
+
+            return data;
+        } catch (error) {
+            const isFinalAttempt = attempt === maxAttempts;
+            const isNetworkError = error instanceof TypeError;
+
+            if (!isFinalAttempt && isNetworkError) {
+                await new Promise(resolve => setTimeout(resolve, 300 * attempt));
+                continue;
+            }
+
+            console.error('TTS API Error:', error);
+            throw error;
+        }
     }
 }
 

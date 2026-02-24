@@ -87,48 +87,79 @@ $requestData = [
     'response_format' => $responseFormat
 ];
 
-// Initialize cURL
-$ch = curl_init($apiUrl);
+// Call upstream with small retry window for transient failures
+$response = false;
+$httpCode = 0;
+$contentType = '';
+$error = '';
+$errno = 0;
+$maxAttempts = 2;
 
-curl_setopt_array($ch, [
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => json_encode($requestData),
-    CURLOPT_HTTPHEADER => [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
-    ],
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_TIMEOUT => 120,
-    CURLOPT_CONNECTTIMEOUT => 30,
-    CURLOPT_SSL_VERIFYPEER => true,
-    CURLOPT_SSL_VERIFYHOST => 2,
-    CURLOPT_FOLLOWLOCATION => true
-]);
+for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+    $ch = curl_init($apiUrl);
 
-$response = curl_exec($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-$error = curl_error($ch);
-$errno = curl_errno($ch);
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($requestData),
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $apiKey
+        ],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 25,
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
+        CURLOPT_FOLLOWLOCATION => true
+    ]);
 
-curl_close($ch);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+    $error = curl_error($ch);
+    $errno = curl_errno($ch);
+
+    curl_close($ch);
+
+    $hasCurlError = ($errno || $error);
+    $transientCurlError = in_array($errno, [7, 28, 52, 56], true);
+    $transientHttpCode = in_array($httpCode, [429, 500, 502, 503, 504], true);
+
+    if (!$hasCurlError && $httpCode === 200) {
+        break;
+    }
+
+    if ($attempt < $maxAttempts && (($hasCurlError && $transientCurlError) || $transientHttpCode)) {
+        usleep(250000);
+        continue;
+    }
+
+    break;
+}
 
 // Check for cURL errors
 if ($errno || $error) {
-    http_response_code(500);
-    echo json_encode(['error' => 'API request failed: ' . $error . ' (Code: ' . $errno . ')']);
+    ob_end_clean();
+    http_response_code(503);
+    echo json_encode(['error' => 'TTS service is temporarily unavailable. Please try again in a moment.']);
     exit;
 }
 
 // Check HTTP response code
 if ($httpCode !== 200) {
-    http_response_code($httpCode);
+    ob_end_clean();
+    $statusCode = in_array($httpCode, [429, 500, 502, 503, 504], true) ? 503 : $httpCode;
+    http_response_code($statusCode);
     // Try to parse error message from response
     $errorData = json_decode($response, true);
     if ($errorData && isset($errorData['error'])) {
         echo json_encode(['error' => $errorData['error']]);
     } else {
-        echo json_encode(['error' => 'API request failed with status: ' . $httpCode]);
+        if (in_array($httpCode, [429, 500, 502, 503, 504], true)) {
+            echo json_encode(['error' => 'TTS service is currently busy. Please try again shortly.']);
+        } else {
+            echo json_encode(['error' => 'API request failed with status: ' . $httpCode]);
+        }
     }
     exit;
 }
@@ -163,7 +194,8 @@ if (strpos($contentType, 'audio/') !== false) {
             $audioCh = curl_init($audioUrl);
             curl_setopt_array($audioCh, [
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT => 60,
+                CURLOPT_TIMEOUT => 20,
+                CURLOPT_CONNECTTIMEOUT => 10,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_SSL_VERIFYPEER => true,
                 CURLOPT_SSL_VERIFYHOST => 2
