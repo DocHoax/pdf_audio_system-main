@@ -27,6 +27,15 @@ try {
     exit;
 }
 
+$apiKey = trim((string) YARNGPT_API_KEY);
+
+if ($apiKey === '' || $apiKey === 'your_yarngpt_api_key_here') {
+    ob_end_clean();
+    http_response_code(500);
+    echo json_encode(['error' => 'TTS service is not configured. Set YARNGPT_API_KEY before using audio playback.']);
+    exit;
+}
+
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -79,7 +88,6 @@ if (!in_array($responseFormat, $validFormats)) {
 
 // Prepare API request
 $apiUrl = 'https://yarngpt.ai/api/v1/tts';
-$apiKey = YARNGPT_API_KEY;
 
 $requestData = [
     'text' => $text,
@@ -93,7 +101,7 @@ $httpCode = 0;
 $contentType = '';
 $error = '';
 $errno = 0;
-$maxAttempts = 2;
+$maxAttempts = 1;
 
 for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
     $ch = curl_init($apiUrl);
@@ -106,8 +114,8 @@ for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
             'Authorization: Bearer ' . $apiKey
         ],
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 25,
-        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_TIMEOUT => 15,
+        CURLOPT_CONNECTTIMEOUT => 5,
         CURLOPT_SSL_VERIFYPEER => true,
         CURLOPT_SSL_VERIFYHOST => 2,
         CURLOPT_FOLLOWLOCATION => true
