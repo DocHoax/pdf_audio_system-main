@@ -1,4 +1,8 @@
-# Digital Ocean App Platform Deployment Guide
+# Deployment Guide
+
+This project now includes an Upsun deployment configuration. The main deployment files are [.platform.app.yaml](.platform.app.yaml), [.platform/routes.yaml](.platform/routes.yaml), and [.platform/services.yaml](.platform/services.yaml). For a quick-start guide, see [UPSUN.md](UPSUN.md).
+
+## Digital Ocean App Platform Deployment Guide
 
 ## Prerequisites
 

@@ -79,6 +79,10 @@ EchoDoc is built with modern, lightweight technologies to ensure maximum compati
 
 Want to deploy EchoDoc for your school, organization, or personal use? It's incredibly simple.
 
+### Upsun deployment
+
+The project now includes Upsun deployment manifests in [.platform.app.yaml](.platform.app.yaml), [.platform/routes.yaml](.platform/routes.yaml), and [.platform/services.yaml](.platform/services.yaml). For the full deployment steps, see [UPSUN.md](UPSUN.md).
+
 ### Prerequisites
 
 - Any web server running PHP 7.4 or higher (Apache, Nginx, XAMPP, etc.)

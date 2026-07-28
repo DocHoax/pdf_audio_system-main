@@ -1,0 +1,42 @@
+name: echodoc
+
+type: php:8.3
+
+disk: 2048
+
+runtime:
+  extensions:
+    - pdo_mysql
+    - mbstring
+    - curl
+    - zip
+    - json
+
+web:
+  locations:
+    '/':
+      root: '/'
+      index: ['index.php']
+      passthru: '/index.php'
+      expires: 300
+
+relationships:
+  database: 'db:mysql'
+
+mounts:
+  'uploads':
+    source: storage
+    source_path: uploads
+
+variables:
+  env:
+    APP_ENV: production
+    PHP_INI_MEMORY_LIMIT: 256M
+    PHP_INI_UPLOAD_MAX_FILESIZE: 20M
+    PHP_INI_POST_MAX_SIZE: 20M
+
+hooks:
+  build: |
+    mkdir -p uploads/avatars
+    chmod -R 755 uploads uploads/avatars
+    composer install --no-interaction --prefer-dist --no-progress
