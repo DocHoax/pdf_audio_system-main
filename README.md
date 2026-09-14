@@ -1,146 +1,352 @@
-<div align="center">
-  <img src="https://img.icons8.com/fluency/96/pdf.png" alt="EchoDoc Logo" width="80" height="80">
-  
-  # EchoDoc: The First African-Language AI PDF Reader
-  
-  **Transform any document into natural, human-like speech in English, Yoruba, Hausa, and Igbo.**
+# PDF-to-Audio System
 
-[![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![Powered By](https://img.shields.io/badge/Powered_by-YarnGPT-FF6B6B?style=for-the-badge)](https://yarngpt.com)
-[![Accessibility](https://img.shields.io/badge/Accessibility-100%25-4CAF50?style=for-the-badge&logo=accessibility&logoColor=white)](#)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+Modern accessibility-focused document reader that converts PDF documents into natural-sounding speech.
 
-[Live Demo](#) • [Documentation](help.php) • [Report Bug](#) • [Request Feature](#)
+## Overview
 
-</div>
+This is a complete modern redevelopment of a PDF-to-Audio system, replacing the legacy PHP implementation with a production-quality architecture built on Next.js and FastAPI.
 
----
+## Features
 
-## 🌍 Breaking Language Barriers in Digital Accessibility
+- **PDF Upload & Validation**: Secure file upload with validation
+- **Text Extraction**: Advanced PDF text extraction using PyMuPDF
+- **Text-to-Speech**: Multiple TTS provider support (Azure, Google, AWS Polly)
+- **Audio Playback**: Custom audio player with playback controls
+- **Audio Download**: Download generated audio as MP3 files
+- **User Authentication**: Secure JWT-based authentication
+- **Document Management**: Complete document library with search and filtering
+- **Accessibility First**: WCAG-compliant interface with keyboard navigation
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
 
-In a world where digital content is predominantly in English, millions of Africans are left behind. **EchoDoc** bridges this gap. We are proud to introduce the **first web-based PDF reader** that not only converts text to speech but does so with native, natural-sounding African voices.
+## Technology Stack
 
-Whether you're a student trying to comprehend complex materials, a professional commuting to work, or someone with visual impairments, EchoDoc turns your reading list into an engaging audio experience.
+### Frontend
+- **Next.js 14** (App Router)
+- **TypeScript**
+- **React**
+- **Tailwind CSS**
+- **shadcn/ui**
+- **TanStack Query**
+- **React Hook Form**
+- **Zod**
 
----
+### Backend
+- **Python 3.11+**
+- **FastAPI**
+- **SQLAlchemy**
+- **PostgreSQL**
+- **Redis**
+- **PyMuPDF** (PDF processing)
+- **Azure Speech/Google TTS/AWS Polly** (Text-to-Speech)
 
-## ✨ Why Choose EchoDoc?
+## Project Structure
 
-### 🗣️ Authentic African Voices
+```
+pdf-to-audio/
+├── apps/
+│   ├── web/                 # Next.js frontend
+│   │   ├── app/            # App router pages
+│   │   ├── components/     # React components
+│   │   └── lib/            # Utilities and API client
+│   │
+│   └── api/                # FastAPI backend
+│       ├── app/
+│       │   ├── api/        # API endpoints
+│       │   ├── core/       # Core configuration
+│       │   ├── models/     # Database models
+│       │   ├── schemas/    # Pydantic schemas
+│       │   └── services/   # Business logic
+│       └── alembic/        # Database migrations
+│
+├── infrastructure/
+│   └── docker/             # Docker configurations
+│
+├── docs/                   # Documentation
+├── docker-compose.yml      # Local development setup
+└── .env.example           # Environment variables template
+```
 
-Powered by cutting-edge **YarnGPT AI**, EchoDoc doesn't just read text; it speaks it. Choose from 16 distinct voice characters, including native accents for **Yoruba, Hausa, and Igbo**, ensuring cultural relevance and better comprehension.
+## Prerequisites
 
-### 🎯 Built for Accessibility
+- **Docker & Docker Compose** (recommended for local development)
+- **Python 3.11+** (if running without Docker)
+- **Node.js 20+** (if running without Docker)
+- **PostgreSQL 14+**
+- **Redis 7+**
 
-Designed from the ground up to assist users with visual impairments, dyslexia, and other reading disabilities. Our intuitive interface requires zero learning curve.
+## Quick Start with Docker
 
-### ⚡ Lightning Fast Processing
-
-Upload PDFs up to 10MB and watch as our advanced extraction engine instantly converts complex document layouts into clean, readable text, ready for audio playback.
-
-### 📱 Read Anywhere, Anytime
-
-Fully responsive design means your audio documents go wherever you go. Start reading on your desktop and finish listening on your mobile device.
-
----
-
-## 👥 Who is EchoDoc For?
-
-- **🎓 Students & Researchers:** Turn heavy academic papers into podcasts. Listen while you commute, exercise, or relax.
-- **👁️ Visually Impaired Users:** Gain independent access to digital documents, forms, and books without relying on screen readers that struggle with PDFs.
-- **🌍 Language Learners:** Improve pronunciation and listening skills by hearing documents read in native African accents.
-- **💼 Busy Professionals:** Maximize your productivity by listening to reports and memos while multitasking.
-
----
-
-## 🛠️ Core Features
-
-- **Drag & Drop Upload:** Seamlessly upload PDF and DOCX files.
-- **Smart Text Extraction:** Bypasses complex formatting to extract the core message.
-- **Granular Audio Controls:** Play, pause, stop, and adjust volume on the fly.
-- **Visual Progress Tracking:** Follow along with a real-time reading progress bar.
-- **Multi-Language Support:** English, Yoruba, Hausa, and Igbo.
-- **Secure & Private:** Your documents are processed securely and never shared.
-
----
-
-## 💻 Technical Excellence
-
-EchoDoc is built with modern, lightweight technologies to ensure maximum compatibility and performance even on low-bandwidth connections.
-
-- **Frontend:** HTML5, CSS3, Vanilla JavaScript (Zero heavy frameworks)
-- **Backend:** PHP 7+ (Fast, reliable, universally supported)
-- **AI Engine:** YarnGPT API for state-of-the-art Text-to-Speech
-- **PDF Processing:** Smalot PDF Parser integration
-
----
-
-## 🚀 Get Started in 3 Minutes
-
-Want to deploy EchoDoc for your school, organization, or personal use? It's incredibly simple.
-
-### Upsun deployment
-
-The project now includes Upsun deployment manifests in [.platform.app.yaml](.platform.app.yaml), [.platform/routes.yaml](.platform/routes.yaml), and [.platform/services.yaml](.platform/services.yaml). For the full deployment steps, see [UPSUN.md](UPSUN.md).
-
-### Prerequisites
-
-- Any web server running PHP 7.4 or higher (Apache, Nginx, XAMPP, etc.)
-- Composer (optional, for advanced PDF parsing)
-
-### Quick Installation
-
-1. **Clone the repository:**
-
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/pdf_audio_system.git
-   cd pdf_audio_system
+   git clone https://github.com/yourusername/pdf-to-audio.git
+   cd pdf-to-audio
    ```
 
-2. **Configure your API Key:**
-   Open `config.php` and add your YarnGPT API key:
-
-   ```php
-   define('YARNGPT_API_KEY', 'your_api_key_here');
-   ```
-
-3. **Set Permissions (Linux/Mac):**
-
+2. **Configure environment variables**
    ```bash
-   chmod -R 777 uploads/
+   cp .env.example .env
+   ```
+   
+   Edit `.env` and add your TTS provider credentials:
+   - For Azure: `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION`
+   - For Google: `GOOGLE_CLOUD_TTS_KEY`
+   - For AWS: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+
+3. **Start all services**
+   ```bash
+   docker-compose up -d
    ```
 
-4. **Launch!**
-   Access the application via your web browser at `http://localhost/pdf_audio_system/`
+4. **Run database migrations**
+   ```bash
+   docker-compose exec api alembic upgrade head
+   ```
 
-_(For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md))_
+5. **Access the application**
+   - Frontend: http://localhost:3000
+   - API: http://localhost:8000
+   - API Docs: http://localhost:8000/docs
+
+## Manual Setup
+
+### Backend Setup
+
+1. **Navigate to API directory**
+   ```bash
+   cd apps/api
+   ```
+
+2. **Create virtual environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure database**
+   - Ensure PostgreSQL is running
+   - Update `DATABASE_URL` in `.env`
+
+5. **Run migrations**
+   ```bash
+   alembic upgrade head
+   ```
+
+6. **Start API server**
+   ```bash
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+### Frontend Setup
+
+1. **Navigate to web directory**
+   ```bash
+   cd apps/web
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment**
+   ```bash
+   cp .env.local .env.local
+   ```
+   Update `NEXT_PUBLIC_API_URL` if needed
+
+4. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Access application**
+   Open http://localhost:3000
+
+## API Documentation
+
+Once the backend is running, visit:
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+### Main Endpoints
+
+#### Authentication
+- `POST /api/v1/auth/register` - Register new user
+- `POST /api/v1/auth/login` - Login user
+- `GET /api/v1/auth/me` - Get current user
+
+#### Documents
+- `POST /api/v1/documents/upload` - Upload PDF
+- `GET /api/v1/documents` - List documents
+- `GET /api/v1/documents/{id}` - Get document details
+- `POST /api/v1/documents/{id}/extract` - Extract text
+- `DELETE /api/v1/documents/{id}` - Delete document
+
+#### Conversions
+- `POST /api/v1/conversions/documents/{id}/convert` - Start conversion
+- `GET /api/v1/conversions/jobs/{id}` - Get job status
+
+#### Audio
+- `GET /api/v1/audio/{id}/stream` - Stream audio
+- `GET /api/v1/audio/{id}/download` - Download audio
+
+#### Voices
+- `GET /api/v1/voices/languages` - Get available languages
+- `GET /api/v1/voices` - Get available voices
+
+## Configuration
+
+### TTS Providers
+
+The system supports multiple TTS providers. Configure via environment variables:
+
+**Azure Speech** (Recommended)
+```env
+TTS_PROVIDER=azure
+AZURE_SPEECH_KEY=your_key_here
+AZURE_SPEECH_REGION=eastus
+```
+
+**Google Cloud TTS**
+```env
+TTS_PROVIDER=google
+GOOGLE_CLOUD_TTS_KEY=your_key_here
+```
+
+**AWS Polly**
+```env
+TTS_PROVIDER=aws_polly
+AWS_ACCESS_KEY_ID=your_key_here
+AWS_SECRET_ACCESS_KEY=your_secret_here
+AWS_REGION=us-east-1
+```
+
+### Storage Providers
+
+**Local Storage** (Development)
+```env
+STORAGE_PROVIDER=local
+STORAGE_PATH=./storage
+```
+
+**S3/R2** (Production)
+```env
+STORAGE_PROVIDER=s3
+STORAGE_BUCKET=your-bucket
+STORAGE_ACCESS_KEY=your_key
+STORAGE_SECRET_KEY=your_secret
+STORAGE_ENDPOINT=https://your-endpoint.com
+```
+
+## Development
+
+### Running Tests
+
+**Backend**
+```bash
+cd apps/api
+pytest
+```
+
+**Frontend**
+```bash
+cd apps/web
+npm test
+```
+
+### Database Migrations
+
+**Create new migration**
+```bash
+cd apps/api
+alembic revision --autogenerate -m "Description"
+```
+
+**Apply migrations**
+```bash
+alembic upgrade head
+```
+
+**Rollback migration**
+```bash
+alembic downgrade -1
+```
+
+## Deployment
+
+### Production Checklist
+
+- [ ] Set strong `JWT_SECRET`
+- [ ] Configure production database
+- [ ] Set up cloud storage (S3/R2)
+- [ ] Configure TTS provider
+- [ ] Enable HTTPS
+- [ ] Set up monitoring
+- [ ] Configure rate limiting
+- [ ] Set proper CORS origins
+- [ ] Use production-grade WSGI server
+- [ ] Set up database backups
+- [ ] Configure logging
+
+### Recommended Hosting
+
+- **Frontend**: Vercel, Netlify
+- **Backend**: Railway, Render, Fly.io, AWS
+- **Database**: Railway, Supabase, AWS RDS
+- **Storage**: Cloudflare R2, AWS S3
+
+## Security
+
+- Passwords are hashed using bcrypt
+- JWT tokens for authentication
+- File validation and size limits
+- SQL injection protection via SQLAlchemy
+- CORS configuration
+- Rate limiting support
+- Secure file storage
+
+## Accessibility
+
+This application prioritizes accessibility:
+
+- WCAG 2.1 Level AA compliance
+- Keyboard navigation support
+- Screen reader compatible
+- High contrast support
+- Focus indicators
+- Semantic HTML
+- ARIA labels where appropriate
+
+## Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Support
+
+For issues and questions:
+- Create an issue on GitHub
+- Check existing documentation
+- Review API documentation at `/docs`
+
+## Acknowledgments
+
+Built with accessibility and inclusion in mind. Special thanks to all contributors and the open-source community.
 
 ---
 
-## 📈 The Future of EchoDoc (Roadmap)
-
-- [ ] **Offline Mode:** Download generated audio as MP3 files.
-- [ ] **More Formats:** Support for EPUB and TXT files.
-- [ ] **Translation:** Auto-translate English PDFs to African languages before reading.
-- [ ] **Browser Extension:** Read web pages directly from your browser.
-
----
-
-## 🤝 Join the Movement
-
-We believe information should be accessible to everyone, regardless of their language or physical abilities.
-
-**Love EchoDoc?** Please give us a ⭐️ on GitHub and share it with your network!
-
-If you'd like to contribute, please fork the repository and create a pull request. We welcome all improvements, especially those adding support for more indigenous languages.
-
----
-
-<div align="center">
-  <p>Built with ❤️ for Accessibility and Inclusion.</p>
-  <p>
-    <a href="contact.php">Contact Us</a> • 
-    <a href="about.php">Our Story</a> • 
-    <a href="help.php">Documentation</a>
-  </p>
-</div>
+**Built with ❤️ for Accessibility**
