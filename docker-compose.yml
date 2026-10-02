@@ -4,27 +4,31 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:16-alpine
-    container_name: pdf-audio-db
+    container_name: echodoc_postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-pdf_audio_db}
+      POSTGRES_USER: ${POSTGRES_USER:-echodoc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-echodoc_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-echodoc_db}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-echodoc} -d ${POSTGRES_DB:-echodoc_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - echodoc_network
 
-  # Redis
+  # Redis Message Broker & Cache
   redis:
     image: redis:7-alpine
-    container_name: pdf-audio-redis
+    container_name: echodoc_redis
+    restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -32,49 +36,116 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - echodoc_network
 
-  # FastAPI Backend
+  # FastAPI Backend API Server
   api:
     build:
-      context: ./apps/api
-      dockerfile: ../../infrastructure/docker/Dockerfile.api
-    container_name: pdf-audio-api
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: echodoc_api
+    restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "${API_PORT:-8000}:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/pdf_audio_db
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-echodoc}:${POSTGRES_PASSWORD:-echodoc_secret}@postgres:5432/${POSTGRES_DB:-echodoc_db}
       - REDIS_URL=redis://redis:6379/0
-    env_file:
-      - .env
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY:-super-secret-development-key-change-in-production-12345}
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - TTS_PROVIDER=${TTS_PROVIDER:-mock}
+      - AZURE_SPEECH_KEY=${AZURE_SPEECH_KEY:-}
+      - AZURE_SPEECH_REGION=${AZURE_SPEECH_REGION:-}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - YARNGPT_API_KEY=${YARNGPT_API_KEY:-}
+      - STORAGE_TYPE=local
+      - LOCAL_STORAGE_PATH=/app/storage
     volumes:
-      - ./apps/api:/app
-      - api_storage:/app/storage
+      - storage_data:/app/storage
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+    networks:
+      - echodoc_network
 
-  # Next.js Frontend
+  # Celery Asynchronous Conversion Workers
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    container_name: echodoc_worker
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-echodoc}:${POSTGRES_PASSWORD:-echodoc_secret}@postgres:5432/${POSTGRES_DB:-echodoc_db}
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY:-super-secret-development-key-change-in-production-12345}
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - TTS_PROVIDER=${TTS_PROVIDER:-mock}
+      - AZURE_SPEECH_KEY=${AZURE_SPEECH_KEY:-}
+      - AZURE_SPEECH_REGION=${AZURE_SPEECH_REGION:-}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - YARNGPT_API_KEY=${YARNGPT_API_KEY:-}
+      - STORAGE_TYPE=local
+      - LOCAL_STORAGE_PATH=/app/storage
+    volumes:
+      - storage_data:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+    networks:
+      - echodoc_network
+
+  # Next.js Web Frontend
   web:
     build:
-      context: ./apps/web
-      dockerfile: ../../infrastructure/docker/Dockerfile.web
-    container_name: pdf-audio-web
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: echodoc_web
+    restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "${WEB_PORT:-3000}:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
-    volumes:
-      - ./apps/web:/app
-      - /app/node_modules
-      - /app/.next
+      - NODE_ENV=production
     depends_on:
       - api
-    command: npm run dev
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+    networks:
+      - echodoc_network
 
 volumes:
   postgres_data:
+    driver: local
   redis_data:
-  api_storage:
+    driver: local
+  storage_data:
+    driver: local
+
+networks:
+  echodoc_network:
+    driver: bridge
