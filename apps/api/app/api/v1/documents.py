@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from typing import List
 import os
 import uuid
-from datetime import datetime
 
 from app.core.database import get_db
 from app.core.config import settings
@@ -14,7 +13,7 @@ from app.models.models import User, Document, DocumentStatus
 from app.schemas.schemas import DocumentUploadResponse, DocumentResponse, DocumentDetailResponse, DocumentTextResponse
 from app.api.dependencies import get_current_user
 from app.services.storage import get_storage_service
-from app.services.pdf_extractor import PDFExtractorService
+from app.services.document_processor import DocumentProcessorService
 
 router = APIRouter()
 
@@ -26,47 +25,41 @@ async def upload_document(
     db: Session = Depends(get_db)
 ):
     """
-    Upload a PDF document
+    Upload a document (PDF, DOCX, or TXT)
     """
-    # Validate file type
-    if not file.filename.lower().endswith('.pdf'):
+    allowed_exts = [ext.strip().lower() for ext in settings.ALLOWED_EXTENSIONS.split(",") if ext.strip()]
+    file_ext = os.path.splitext(file.filename)[1].lower().strip(".")
+
+    if file_ext not in allowed_exts:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only PDF files are allowed"
+            detail=f"Invalid file extension. Allowed formats: {', '.join(allowed_exts)}"
         )
-    
-    # Validate MIME type
-    if file.content_type not in ['application/pdf']:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid file type. Only PDF files are allowed"
-        )
-    
+
     # Read file content
     file_content = await file.read()
     file_size = len(file_content)
-    
+
     # Validate file size
     if file_size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"File size exceeds maximum allowed size of {settings.MAX_FILE_SIZE / (1024*1024)}MB"
         )
-    
+
     if file_size == 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="File is empty"
         )
-    
+
     # Generate unique filename
-    file_extension = os.path.splitext(file.filename)[1]
-    stored_filename = f"{uuid.uuid4()}{file_extension}"
-    
+    stored_filename = f"{uuid.uuid4()}.{file_ext}"
+
     # Store file
     storage_service = get_storage_service()
     file_path = await storage_service.save_document(stored_filename, file_content)
-    
+
     # Create document record
     document = Document(
         user_id=current_user.id,
@@ -74,14 +67,14 @@ async def upload_document(
         stored_filename=stored_filename,
         file_size=file_size,
         file_path=file_path,
-        mime_type=file.content_type,
+        mime_type=file.content_type or f"application/{file_ext}",
         status=DocumentStatus.UPLOADED
     )
-    
+
     db.add(document)
     db.commit()
     db.refresh(document)
-    
+
     return document
 
 
@@ -98,7 +91,7 @@ async def list_documents(
     documents = db.query(Document).filter(
         Document.user_id == current_user.id
     ).order_by(Document.created_at.desc()).offset(skip).limit(limit).all()
-    
+
     # Add has_audio flag
     result = []
     for doc in documents:
@@ -115,7 +108,7 @@ async def list_documents(
             "has_audio": any(conv.audio_file is not None for conv in doc.conversions)
         }
         result.append(DocumentResponse(**doc_dict))
-    
+
     return result
 
 
@@ -132,13 +125,13 @@ async def get_document(
         Document.id == document_id,
         Document.user_id == current_user.id
     ).first()
-    
+
     if not document:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found"
         )
-    
+
     doc_dict = {
         "id": document.id,
         "user_id": document.user_id,
@@ -153,7 +146,7 @@ async def get_document(
         "mime_type": document.mime_type,
         "has_audio": any(conv.audio_file is not None for conv in document.conversions)
     }
-    
+
     return DocumentDetailResponse(**doc_dict)
 
 
@@ -164,45 +157,50 @@ async def extract_text(
     db: Session = Depends(get_db)
 ):
     """
-    Extract text from a PDF document
+    Extract text from a document (PDF, DOCX, or TXT)
     """
     document = db.query(Document).filter(
         Document.id == document_id,
         Document.user_id == current_user.id
     ).first()
-    
+
     if not document:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found"
         )
-    
+
     # Update status
     document.status = DocumentStatus.EXTRACTING
     db.commit()
-    
+
     try:
-        # Extract text
+        # Extract text using unified processor
         storage_service = get_storage_service()
         file_content = await storage_service.get_document(document.file_path)
-        
-        extractor = PDFExtractorService()
-        extraction_result = extractor.extract_text_from_bytes(file_content)
-        
+
+        processor = DocumentProcessorService()
+        file_ext = os.path.splitext(document.original_filename)[1].lower().strip(".")
+        extraction_result = processor.extract_text(
+            file_bytes=file_content,
+            file_type=file_ext or document.mime_type,
+            filename=document.original_filename
+        )
+
         # Update document
         document.extracted_text = extraction_result["text"]
-        document.page_count = extraction_result["page_count"]
+        document.page_count = extraction_result.get("page_count", 1)
         document.status = DocumentStatus.EXTRACTED
         db.commit()
         db.refresh(document)
-        
+
         return DocumentTextResponse(
             id=document.id,
             extracted_text=document.extracted_text,
             page_count=document.page_count,
             character_count=len(document.extracted_text) if document.extracted_text else 0
         )
-        
+
     except Exception as e:
         document.status = DocumentStatus.FAILED
         document.error_message = str(e)
@@ -226,13 +224,13 @@ async def get_document_text(
         Document.id == document_id,
         Document.user_id == current_user.id
     ).first()
-    
+
     if not document:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found"
         )
-    
+
     return DocumentTextResponse(
         id=document.id,
         extracted_text=document.extracted_text,
@@ -254,19 +252,19 @@ async def delete_document(
         Document.id == document_id,
         Document.user_id == current_user.id
     ).first()
-    
+
     if not document:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found"
         )
-    
+
     # Delete file from storage
     storage_service = get_storage_service()
     await storage_service.delete_document(document.file_path)
-    
+
     # Delete document record (cascades to conversions and audio files)
     db.delete(document)
     db.commit()
-    
+
     return None
