@@ -63,24 +63,32 @@ export interface User {
   created_at?: string;
 }
 
+export type UserProfile = User;
+
 export interface UserSettings {
   id?: number;
   user_id?: number;
-  preferred_voice: string;
-  preferred_language: string;
-  default_speed: number;
-  default_pitch: number;
-  theme: string;
-  email_notifications: boolean;
+  preferred_voice?: string;
+  default_voice?: string;
+  preferred_language?: string;
+  default_speed?: number;
+  default_volume?: number;
+  default_pitch?: number;
+  theme?: string;
+  email_notifications?: boolean;
+  notifications_enabled?: boolean;
 }
 
 export interface UserSettingsUpdate {
   preferred_voice?: string;
+  default_voice?: string;
   preferred_language?: string;
   default_speed?: number;
+  default_volume?: number;
   default_pitch?: number;
   theme?: string;
   email_notifications?: boolean;
+  notifications_enabled?: boolean;
 }
 
 export interface UserProfileUpdate {
@@ -95,12 +103,14 @@ export interface UserStats {
   completed_conversions: number;
   total_audio_duration_seconds: number;
   reading_history_count: number;
+  storage_used_bytes?: number;
 }
 
 export const authApi = {
   register: (data: RegisterData) => api.post<User>("/auth/register", data),
   login: (data: LoginData) => api.post<{ access_token: string; token_type: string }>("/auth/login", data),
   me: () => api.get<User>("/auth/me"),
+  getMe: () => api.get<User>("/auth/me"),
   logout: () => api.post<{ message: string }>("/auth/logout"),
 };
 
@@ -184,6 +194,7 @@ export interface Conversion {
   completed_at?: string;
   created_at: string;
   has_audio?: boolean;
+  audio_id?: number;
   audio_file_id?: number;
 }
 
@@ -290,6 +301,7 @@ export interface ReadingHistory {
   is_completed: boolean;
   updated_at: string;
   created_at: string;
+  last_read_at?: string;
 }
 
 export interface ReadingProgressUpdate {

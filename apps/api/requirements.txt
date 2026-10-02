@@ -16,6 +16,7 @@ bcrypt==4.2.0
 # PDF Processing
 PyMuPDF==1.24.10
 pdfplumber==0.11.4
+Pillow>=10.4.0
 
 # Text Processing
 nltk==3.9.1
@@ -27,6 +28,7 @@ redis==5.0.8
 
 # Storage
 boto3==1.35.19
+aiofiles==24.1.0
 
 # Azure Speech
 azure-cognitiveservices-speech==1.40.0

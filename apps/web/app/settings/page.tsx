@@ -152,9 +152,13 @@ export default function SettingsPage() {
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold">Preferred Voice Persona</Label>
                   <select
-                    value={settings.default_voice}
+                    value={settings.preferred_voice || settings.default_voice || "Idera"}
                     onChange={(e) =>
-                      setSettings((prev) => ({ ...prev, default_voice: e.target.value }))
+                      setSettings((prev) => ({
+                        ...prev,
+                        preferred_voice: e.target.value,
+                        default_voice: e.target.value,
+                      }))
                     }
                     className="w-full px-3 py-2 text-xs bg-card border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                   >
@@ -179,7 +183,7 @@ export default function SettingsPage() {
                   <div className="flex justify-between items-center">
                     <Label className="text-xs font-semibold">Default Speech Speed Multiplier</Label>
                     <span className="text-xs font-mono font-semibold text-primary">
-                      {settings.default_speed.toFixed(2)}x
+                      {(settings.default_speed ?? 1.0).toFixed(2)}x
                     </span>
                   </div>
                   <input
@@ -187,7 +191,7 @@ export default function SettingsPage() {
                     min="0.5"
                     max="2.0"
                     step="0.05"
-                    value={settings.default_speed}
+                    value={settings.default_speed ?? 1.0}
                     onChange={(e) =>
                       setSettings((prev) => ({
                         ...prev,

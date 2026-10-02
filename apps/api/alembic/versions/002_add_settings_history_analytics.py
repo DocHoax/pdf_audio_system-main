@@ -18,6 +18,14 @@ depends_on = None
 
 
 def upgrade() -> None:
+    # Add columns to users table
+    op.add_column('users', sa.Column('avatar', sa.String(length=255), nullable=True))
+    op.add_column('users', sa.Column('last_login', sa.DateTime(timezone=True), nullable=True))
+
+    # Add columns to documents table
+    op.add_column('documents', sa.Column('file_type', sa.String(length=20), server_default='pdf', nullable=False))
+    op.add_column('documents', sa.Column('char_count', sa.Integer(), server_default='0', nullable=True))
+
     # Add translated_text to conversion_jobs
     op.add_column('conversion_jobs', sa.Column('translated_text', sa.Text(), nullable=True))
 
@@ -63,6 +71,8 @@ def upgrade() -> None:
         sa.Column('event_type', sa.String(length=50), nullable=False),
         sa.Column('event_data', sa.JSON(), nullable=True),
         sa.Column('page_url', sa.String(length=500), nullable=True),
+        sa.Column('ip_address', sa.String(length=45), nullable=True),
+        sa.Column('user_agent', sa.String(length=500), nullable=True),
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
         sa.PrimaryKeyConstraint('id')
@@ -80,3 +90,7 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_user_settings_id'), table_name='user_settings')
     op.drop_table('user_settings')
     op.drop_column('conversion_jobs', 'translated_text')
+    op.drop_column('documents', 'char_count')
+    op.drop_column('documents', 'file_type')
+    op.drop_column('users', 'last_login')
+    op.drop_column('users', 'avatar')

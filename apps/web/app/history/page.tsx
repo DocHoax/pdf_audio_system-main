@@ -183,7 +183,7 @@ export default function HistoryPage() {
                           {item.document_title}
                         </h4>
                         <span className="text-[11px] text-muted-foreground">
-                          Last read: {new Date(item.last_read_at).toLocaleDateString()}
+                          Last read: {new Date(item.last_read_at || item.updated_at || item.created_at).toLocaleDateString()}
                         </span>
                       </div>
                     </div>
